@@ -6,6 +6,7 @@
 namespace Vaimo\WebDriverBinaryDownloader\Analysers;
 
 use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+use Vaimo\WebDriverBinaryDownloader\Interfaces\PlatformAnalyserInterface as Platform;
 
 class ProjectAnalyser
 {
@@ -89,13 +90,38 @@ class ProjectAnalyser
         }
 
         $executableName = $executableNames[$platformCode];
-
-        $driverPath = realpath($this->utils->composePath($binaryDir, $executableName));
+        $executableRenames = $this->pluginConfig->getExecutableFileRenames();
         
-        return $this->versionResolver->pollForVersion(
-            [$driverPath],
+        $driverPath = realpath(
+            $this->utils->composePath($binaryDir, $executableRenames[$executableName] ?? $executableName)
+        );
+        
+        $binaries = [$driverPath];
+        
+        if ($platformCode === Platform::TYPE_WIN64 || $platformCode === Platform::TYPE_WIN32) {
+            $binaries = array_merge($binaries, array_map(function ($item) {
+                return str_replace('\\', '\\\\', $item);
+            }, $binaries));
+        }
+        
+        $installedVersion = $this->versionResolver->pollForVersion(
+            $binaries,
             $this->pluginConfig->getDriverVersionPollingConfig()
         );
+        
+        $versionMap = $this->pluginConfig->getBrowserDriverVersionMap();
+
+        foreach ($versionMap as $driverVersion) {
+            if (!is_array($driverVersion)) {
+                $driverVersion = [$driverVersion];
+            }
+            
+            if (in_array($installedVersion, $driverVersion)) {
+                $installedVersion = reset($driverVersion);
+            }  
+        }
+
+        return $installedVersion;
     }
 
     public function resolveRequiredDriverVersion()
@@ -118,7 +144,11 @@ class ProjectAnalyser
 
             if (!$version) {
                 $versionMap = array_filter($this->pluginConfig->getBrowserDriverVersionMap());
-                $version = reset($versionMap);   
+                $version = reset($versionMap);
+                
+                if (is_array($version)) {
+                    $version = reset($version);
+                }
             }
         }
 
@@ -148,7 +178,7 @@ class ProjectAnalyser
                 continue;
             }
 
-            return $driverVersion;
+            return is_array($driverVersion) ? reset($driverVersion) : $driverVersion;
         }
 
         return '';

@@ -30,26 +30,31 @@ class VersionResolver
         $processExecutor::setTimeout(10);
 
         foreach ($binaryPaths as $path) {
-            if (!is_executable($path)) {
+            if ($path !== null && !is_executable($path)) {
                 continue;
             }
 
             foreach ($versionPollingConfig as $callTemplate => $resultPatterns) {
                 $output = '';
 
-                $processExecutor->execute(sprintf($callTemplate, $path), $output);
+                $pollCommand = sprintf($callTemplate, $path);
+                $processExecutor->execute($pollCommand, $output);
 
-                $output = trim($output);
+                $output = str_replace(chr(0), '', trim($output));
+                
+                if (!$output) {
+                    continue;
+                }
 
                 foreach ($resultPatterns as $pattern) {
-                    $matches = sscanf($output, $pattern);
+                    preg_match(sprintf('/%s/i', $pattern), $output, $matches);
 
-                    if (!is_array($matches) || !$matches) {
+                    $result = $matches[1] ?? false;
+
+                    if (!$result) {
                         continue;
                     }
-
-                    $result = reset($matches);
-
+                    
                     try {
                         $this->versionParser->parseConstraints($result);
                     } catch (\UnexpectedValueException $exception) {

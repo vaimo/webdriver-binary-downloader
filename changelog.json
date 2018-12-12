@@ -1,4 +1,13 @@
 {
+    "2.0.0": {
+        "breaking": [
+            "(config) version polling output parser switched to use refex pattern matching instead of relying on sscanf"
+        ],
+        "feature": [
+            "allow driver version polling to use version aliases (required for some drivers that use multiple versioning schemes (like EdgeDriver))",
+            "try version polling with escaped path on Windows if normal call results in blank response"
+        ]
+    },
     "1.0.0": {
         "feature": [
             "allow webdriver binary download based on passed-in configuration"
