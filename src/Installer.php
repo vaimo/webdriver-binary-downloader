@@ -5,7 +5,9 @@
  */
 namespace Vaimo\WebDriverBinaryDownloader;
 
-class Installer
+use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+
+class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\InstallerInterface
 {
     /**
      * @var \Composer\Composer
@@ -36,7 +38,7 @@ class Installer
         $this->utils = new \Vaimo\WebDriverBinaryDownloader\Installer\Utils();
     }
     
-    public function executeWithConfig(\Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig)
+    public function executeWithConfig(ConfigInterface $pluginConfig)
     {
         $binaryDir = $this->composerRuntime->getConfig()->get('bin-dir');
         
@@ -78,7 +80,7 @@ class Installer
         
         $pluginPackage = $projectAnalyser->resolvePackageForNamespace(
             $localRepository->getCanonicalPackages(),
-            __NAMESPACE__
+            get_class($pluginConfig)
         );
         
         $downloadManager = new \Vaimo\WebDriverBinaryDownloader\Installer\DownloadManager(

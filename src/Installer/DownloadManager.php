@@ -81,7 +81,11 @@ class DownloadManager
                 /** @var \Composer\Downloader\DownloaderInterface $downloader */
                 $downloader = $this->downloadManager->getDownloaderForInstalledPackage($package);
 
-                $downloader->download($package, $targetDir);
+                /**
+                 * Some downloaders have the option to mute the output, which is why 
+                 * there the third call argument.
+                 */
+                $downloader->download($package, $targetDir, false);
                 
                 return $package;
             } catch (\Composer\Downloader\TransportException $exception) {

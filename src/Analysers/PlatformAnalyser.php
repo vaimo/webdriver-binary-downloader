@@ -5,14 +5,8 @@
  */
 namespace Vaimo\WebDriverBinaryDownloader\Analysers;
 
-class PlatformAnalyser
+class PlatformAnalyser implements \Vaimo\WebDriverBinaryDownloader\Interfaces\PlatformAnalyserInterface
 {
-    const TYPE_LINUX32 = 'linux32';
-    const TYPE_LINUX64 = 'linux64';
-    const TYPE_WIN32 = 'win32';
-    const TYPE_WIN64 = 'win64';
-    const TYPE_MAC64 = 'mac64';
-    
     public function getPlatformCode()
     {
         if (stripos(PHP_OS, 'win') === 0) {
