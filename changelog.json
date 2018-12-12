@@ -1,0 +1,7 @@
+{
+    "1.0.0": {
+        "feature": [
+            "allow webdriver binary download based on passed-in configuration"
+        ]
+    }
+}

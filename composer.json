@@ -1,0 +1,38 @@
+{
+    "name": "vaimo/webdriver-binary-downloader",
+    "type": "library",
+    "license": "MIT",
+    "description": "General-issue library that enables building any kind of WebDriver binary downloader",
+    "require": {
+        "composer/composer": "^1.0",
+        "composer-plugin-api": "^1.0"
+    },
+    "authors": [
+        {
+            "name": "Allan Paiste",
+            "email": "allan.paiste@vaimo.com"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/vaimo/webdriver-binary-downloader",
+        "docs": "https://github.com/vaimo/webdriver-binary-downloader",
+        "issues": "https://github.com/vaimo/webdriver-binary-downloader/issues"
+    },
+    "keywords": [
+        "browser driver",
+        "webdriver",
+        "downloader",
+        "binary downloader",
+        "binary"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Vaimo\\WebDriverBinaryDownloader\\": "src"
+        }
+    },
+    "extra": {
+        "changelog": {
+            "source": "changelog.json"
+        }
+    }
+}
