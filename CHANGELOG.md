@@ -2,6 +2,17 @@
 
 _This file has been auto-generated from the contents of changelog.json_
 
+## 2.2.0 (2019-05-03)
+
+### Feature
+
+* output polling command and raw result when running Composer with -vvv
+
+### Fix
+
+* remote version polling result not validated to be a valid constraint
+
+
 ## 2.1.0 (2019-05-02)
 
 ### Feature
