@@ -9,4 +9,6 @@ General-issue library that enables building any kind of WebDriver binary downloa
 
 The package comes with a configuration interface which downloader plugin is expected 
 to implement whilst providing support for browser version checking and browser driver 
-binary donwload.
+binary download.
+
+More information on recent changes [HERE](./CHANGELOG.md).
