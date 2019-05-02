@@ -36,11 +36,6 @@ class ProjectAnalyser
     private $versionResolver;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser
-     */
-    private $packageAnalyser;
-
-    /**
      * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
      */
     private $systemUtils;
