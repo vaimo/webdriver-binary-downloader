@@ -4,6 +4,14 @@
         "possible to generate change-logs in other formats as well (when needed) and to do automatic releases based on",
         "added change-log records. More on how to use it: https://github.com/vaimo/composer-changelogs"
     ],
+    "2.2.0": {
+        "feature": [
+            "output polling command and raw result when running Composer with -vvv"
+        ],
+        "fix": [
+            "remote version polling result not validated to be a valid constraint"
+        ]
+    },
     "2.1.0": {
         "feature": [
             "allow multiple version checking url's to cater for download sources that might have different mechanisms for fetching information about latest driver versions",

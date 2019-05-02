@@ -62,14 +62,17 @@ class ProjectAnalyser
 
     /**
      * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param \Composer\IO\IOInterface $cliIO
      */
     public function __construct(
-        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        \Composer\IO\IOInterface $cliIO = null
     ) {
         $this->pluginConfig = $pluginConfig;
 
         $this->environmentAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\EnvironmentAnalyser(
-            $pluginConfig
+            $pluginConfig,
+            $cliIO
         );
 
         $this->versionParser = new \Composer\Package\Version\VersionParser();
@@ -163,7 +166,7 @@ class ProjectAnalyser
                 $this->dataUtils->extractValue($requestConfig, ConfigInterface::REQUEST_VERSION, array())
             );
 
-            $version = $this->versionResolver->pollForDriverVersion(
+            $version = $this->versionResolver->pollForRemoteVersion(
                 $versionCheckUrls,
                 $this->resolveBrowserVersion()
             );

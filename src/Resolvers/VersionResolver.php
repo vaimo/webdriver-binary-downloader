@@ -8,6 +8,11 @@ namespace Vaimo\WebDriverBinaryDownloader\Resolvers;
 class VersionResolver
 {
     /**
+     * @var \Composer\IO\IOInterface
+     */
+    private $cliIO;
+    
+    /**
      * @var \Composer\Package\Version\VersionParser
      */
     private $versionParser;
@@ -22,8 +27,11 @@ class VersionResolver
      */
     private $dataUtils;
     
-    public function __construct()
-    {
+    public function __construct(
+        \Composer\IO\IOInterface $cliIO = null
+    ) {
+        $this->cliIO = $cliIO;
+        
         $this->versionParser = new \Composer\Package\Version\VersionParser();
 
         $this->stringUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils();
@@ -45,10 +53,14 @@ class VersionResolver
                 $output = '';
 
                 $pollCommand = sprintf($callTemplate, $path);
+
+                $this->writeLn(sprintf('# Polling local version with: %s', $pollCommand));
                 
                 $processExecutor->execute($pollCommand, $output);
 
                 $output = str_replace(chr(0), '', trim($output));
+
+                $this->writeLn(sprintf('>>> %s', $output));
                 
                 if (!$output) {
                     continue;
@@ -81,7 +93,7 @@ class VersionResolver
         return '';
     }
     
-    public function pollForDriverVersion(array $versionCheckUrls, $browserVersion)
+    public function pollForRemoteVersion(array $versionCheckUrls, $browserVersion)
     {
         $variables = array(
             'major' => $this->stringUtils->strTokOffset($browserVersion, 1),
@@ -95,13 +107,32 @@ class VersionResolver
                 break;
             }
 
-            $version = trim(
-                @file_get_contents(
-                    $this->stringUtils->stringFromTemplate($versionCheckUrl, $variables)
-                )
-            );
+            $queryUrl = $this->stringUtils->stringFromTemplate($versionCheckUrl, $variables);
+            
+            $this->writeLn(sprintf('# Polling remote version with: %s', $queryUrl));
+
+            $result = @file_get_contents($queryUrl);
+
+            $this->writeLn(sprintf('>>> %s', $result));
+
+            try {
+                $this->versionParser->parseConstraints(trim($result));
+            } catch (\UnexpectedValueException $exception) {
+                continue;
+            }
+            
+            $version = trim($result);
         }
 
         return $version;
+    }
+    
+    private function writeLn($message)
+    {
+        if (!$this->cliIO) {
+            return;
+        }
+        
+        $this->cliIO->write($message);
     }
 }

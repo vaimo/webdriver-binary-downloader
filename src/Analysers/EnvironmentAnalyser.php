@@ -24,14 +24,16 @@ class EnvironmentAnalyser
 
     /**
      * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param \Composer\IO\IOInterface $cliIO
      */
     public function __construct(
-        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        \Composer\IO\IOInterface $cliIO = null
     ) {
         $this->pluginConfig = $pluginConfig;
         
         $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver();
+        $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver($cliIO);
     }
 
     public function resolveBrowserVersion()
