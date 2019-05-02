@@ -12,7 +12,7 @@ class PackageResolver
      */
     private $packageAnalyser;
     
-    public function __construct() 
+    public function __construct()
     {
         $this->packageAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
     }

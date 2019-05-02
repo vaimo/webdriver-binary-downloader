@@ -45,8 +45,8 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         $binaryDir = $composerConfig->get('bin-dir');
         
         $projectAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\ProjectAnalyser(
-            $pluginConfig, 
-            $this->cliIO->isDebug() ? $this->cliIO : null 
+            $pluginConfig,
+            $this->cliIO->isDebug() ? $this->cliIO : null
         );
         
         $packageManager = new \Vaimo\WebDriverBinaryDownloader\Managers\PackageManager($pluginConfig);
