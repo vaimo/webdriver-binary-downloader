@@ -46,6 +46,8 @@ class VersionResolver
 
         foreach ($binaryPaths as $path) {
             if ($path !== null && !is_executable($path)) {
+                $this->writeLn(sprintf('### <comment>Polling skipped:</comment> <info>%s</info>', $path));
+
                 continue;
             }
 
@@ -54,13 +56,13 @@ class VersionResolver
 
                 $pollCommand = sprintf($callTemplate, $path);
 
-                $this->writeLn(sprintf('# Polling local version with: %s', $pollCommand));
+                $this->writeLn(sprintf('### <comment>Polling local version with:</comment> <info>%s</info>', $pollCommand));
                 
                 $processExecutor->execute($pollCommand, $output);
 
                 $output = str_replace(chr(0), '', trim($output));
 
-                $this->writeLn(sprintf('>>> %s', $output));
+                $this->writeLn(sprintf('> %s', $output));
                 
                 if (!$output) {
                     continue;
@@ -75,6 +77,8 @@ class VersionResolver
 
                     $result = $this->dataUtils->extractValue($matches, 1, false);
 
+                    $this->writeLn(sprintf('>> %s', $result));
+
                     if (!$result) {
                         continue;
                     }
@@ -82,8 +86,12 @@ class VersionResolver
                     try {
                         $this->versionParser->parseConstraints($result);
                     } catch (\UnexpectedValueException $exception) {
+                        $this->writeLn('>>> INVALID');
+                        
                         continue;
                     }
+
+                    $this->writeLn('>>> VALID');
 
                     return $result;
                 }
@@ -109,7 +117,9 @@ class VersionResolver
 
             $queryUrl = $this->stringUtils->stringFromTemplate($versionCheckUrl, $variables);
             
-            $this->writeLn(sprintf('# Polling remote version with: %s', $queryUrl));
+            $this->writeLn(
+                sprintf('### <comment>Polling remote version with:</comment> <info>%s</info>', $queryUrl)
+            );
 
             $result = @file_get_contents($queryUrl);
 
@@ -118,8 +128,12 @@ class VersionResolver
             try {
                 $this->versionParser->parseConstraints(trim($result));
             } catch (\UnexpectedValueException $exception) {
+                $this->writeLn('>>> INVALID');
+                
                 continue;
             }
+
+            $this->writeLn('>>> VALID');
             
             $version = trim($result);
         }
