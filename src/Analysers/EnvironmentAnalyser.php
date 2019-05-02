@@ -18,7 +18,7 @@ class EnvironmentAnalyser
     private $platformAnalyser;
     
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Installer\VersionResolver
+     * @var \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver
      */
     private $versionResolver;
 
@@ -31,7 +31,7 @@ class EnvironmentAnalyser
         $this->pluginConfig = $pluginConfig;
         
         $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Installer\VersionResolver();
+        $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver();
     }
 
     public function resolveBrowserVersion()

@@ -17,25 +17,25 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
     /**
      * @var \Composer\IO\IOInterface
      */
-    private $io;
+    private $cliIO;
     
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Installer\Utils 
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
      */
-    private $utils;
+    private $systemUtils;
     
     /**
      * @param \Composer\Composer $composerRuntime
-     * @param \Composer\IO\IOInterface $io
+     * @param \Composer\IO\IOInterface $cliIO
      */
     public function __construct(
         \Composer\Composer $composerRuntime,
-        \Composer\IO\IOInterface $io
+        \Composer\IO\IOInterface $cliIO
     ) {
         $this->composerRuntime = $composerRuntime;
-        $this->io = $io;
+        $this->cliIO = $cliIO;
         
-        $this->utils = new \Vaimo\WebDriverBinaryDownloader\Installer\Utils();
+        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
     }
     
     public function executeWithConfig(ConfigInterface $pluginConfig)
@@ -45,13 +45,13 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         $binaryDir = $composerConfig->get('bin-dir');
         
         $projectAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\ProjectAnalyser($pluginConfig);
-        $packageManager = new \Vaimo\WebDriverBinaryDownloader\Installer\PackageManager($pluginConfig);
+        $packageManager = new \Vaimo\WebDriverBinaryDownloader\Managers\PackageManager($pluginConfig);
 
         $driverName = $pluginConfig->getDriverName();
         
         if (!$projectAnalyser->resolvePlatformSupport()) {
-            if ($this->io->isVerbose()) {
-                $this->io->write(
+            if ($this->cliIO->isVerbose()) {
+                $this->cliIO->write(
                     sprintf('SKIPPING %s setup: platform not supported', $driverName)
                 );
             }
@@ -64,8 +64,8 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         $currentVersion = $projectAnalyser->resolveInstalledDriverVersion($binaryDir);
 
         if (strpos($currentVersion, $version) === 0) {
-            if ($this->io->isVerbose()) {
-                $this->io->write(
+            if ($this->cliIO->isVerbose()) {
+                $this->cliIO->write(
                     sprintf('Required version (v%s) already installed', $version)
                 );
             }
@@ -73,7 +73,7 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
             return;
         }
         
-        $this->io->write(
+        $this->cliIO->write(
             sprintf('<info>Installing <comment>%s</comment> (v%s)</info>', $driverName, $version)
         );
 
@@ -85,30 +85,34 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
             get_class($pluginConfig)
         );
         
-        $downloadManager = new \Vaimo\WebDriverBinaryDownloader\Installer\DownloadManager(
-            $this->composerRuntime->getDownloadManager(),
+        $virtualPkgFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory(
             $pluginPackage,
-            $this->createCacheManager($pluginPackage->getName()),
             $pluginConfig
         );
         
+        $downloadManager = new \Vaimo\WebDriverBinaryDownloader\Managers\DownloadManager(
+            $this->composerRuntime->getDownloadManager(),
+            $this->createCacheManager($pluginPackage->getName()),
+            $virtualPkgFactory
+        );
+        
         try {
-            $package = $downloadManager->downloadRelease([$version], 2);
+            $package = $downloadManager->downloadRelease(array($version), 2);
         } catch (\Exception $exception) {
-            $this->io->write(
+            $this->cliIO->write(
                 sprintf('<error>%s</error>', $exception->getMessage())
             );
             
             return;
-        } 
+        }
   
         try {
             $packageManager->installBinaries($package, $binaryDir);
 
-            $this->io->write('');
-            $this->io->write('<info>Done</info>');
+            $this->cliIO->write('');
+            $this->cliIO->write('<info>Done</info>');
         } catch (\Exception $exception) {
-            $this->io->write(
+            $this->cliIO->write(
                 sprintf('<error>%s</error>', $exception->getMessage())
             );
         }
@@ -121,8 +125,8 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         $cacheDir = $composerConfig->get('cache-dir');
         
         return new \Composer\Cache(
-            $this->io,
-            $this->utils->composePath($cacheDir, 'files', $cacheName, 'downloads')
+            $this->cliIO,
+            $this->systemUtils->composePath($cacheDir, 'files', $cacheName, 'downloads')
         );
     }
 }

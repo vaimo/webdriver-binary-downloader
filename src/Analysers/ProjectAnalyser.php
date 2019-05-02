@@ -31,19 +31,24 @@ class ProjectAnalyser
     private $platformAnalyser;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Installer\VersionResolver
+     * @var \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver
      */
     private $versionResolver;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser 
+     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser
      */
     private $packageAnalyser;
     
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Installer\Utils
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
      */
-    private $utils;
+    private $systemUtils;
+
+    /**
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
+     */
+    private $dataUtils;
 
     /**
      * @var \Composer\Package\CompletePackage
@@ -58,15 +63,18 @@ class ProjectAnalyser
     ) {
         $this->pluginConfig = $pluginConfig;
 
-        $this->environmentAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\EnvironmentAnalyser($pluginConfig);
+        $this->environmentAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\EnvironmentAnalyser(
+            $pluginConfig
+        );
 
         $this->versionParser = new \Composer\Package\Version\VersionParser();
 
         $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Installer\VersionResolver();
         $this->packageAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
+        $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver();
         
-        $this->utils = new \Vaimo\WebDriverBinaryDownloader\Installer\Utils();
+        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
     }
     
     public function resolvePlatformSupport()
@@ -74,8 +82,10 @@ class ProjectAnalyser
         $platformCode = $this->platformAnalyser->getPlatformCode();
         
         $fileNames = $this->pluginConfig->getExecutableFileNames();
-
-        return (bool)($fileNames[$platformCode] ?? false);
+        
+        return (bool)(
+            $this->dataUtils->extractValue($fileNames, $platformCode, false)
+        );
     }
     
     public function resolveInstalledDriverVersion($binaryDir)
@@ -93,15 +103,21 @@ class ProjectAnalyser
         $executableRenames = $this->pluginConfig->getExecutableFileRenames();
         
         $driverPath = realpath(
-            $this->utils->composePath($binaryDir, $executableRenames[$executableName] ?? $executableName)
+            $this->systemUtils->composePath(
+                $binaryDir,
+                $this->dataUtils->extractValue($executableRenames, $executableName, $executableName)
+            )
         );
         
-        $binaries = [$driverPath];
+        $binaries = array($driverPath);
         
         if ($platformCode === Platform::TYPE_WIN64 || $platformCode === Platform::TYPE_WIN32) {
-            $binaries = array_merge($binaries, array_map(function ($item) {
-                return str_replace('\\', '\\\\', $item);
-            }, $binaries));
+            $binaries = array_merge(
+                $binaries,
+                array_map(function ($item) {
+                    return str_replace('\\', '\\\\', $item);
+                }, $binaries)
+            );
         }
         
         $installedVersion = $this->versionResolver->pollForVersion(
@@ -113,12 +129,12 @@ class ProjectAnalyser
 
         foreach ($versionMap as $driverVersion) {
             if (!is_array($driverVersion)) {
-                $driverVersion = [$driverVersion];
+                $driverVersion = array($driverVersion);
             }
             
             if (in_array($installedVersion, $driverVersion)) {
                 $installedVersion = reset($driverVersion);
-            }  
+            }
         }
 
         return $installedVersion;
@@ -136,10 +152,16 @@ class ProjectAnalyser
                 $this->environmentAnalyser->resolveBrowserVersion()
             );
 
-            $versionCheckUrls = $requestConfig[ConfigInterface::REQUEST_VERSION] ?? [];
+            $versionCheckUrls = $this->dataUtils->extractValue(
+                $requestConfig,
+                ConfigInterface::REQUEST_VERSION,
+                array()
+            );
             
             if (!is_array($versionCheckUrls)) {
-                $versionCheckUrls = [$versionCheckUrls];
+                $versionCheckUrls = array_filter(
+                    array($versionCheckUrls)
+                );
             }
 
             foreach ($versionCheckUrls as $versionCheckUrl) {
@@ -188,7 +210,9 @@ class ProjectAnalyser
                 continue;
             }
 
-            return is_array($driverVersion) ? reset($driverVersion) : $driverVersion;
+            return is_array($driverVersion)
+                ? reset($driverVersion)
+                : $driverVersion;
         }
 
         return '';

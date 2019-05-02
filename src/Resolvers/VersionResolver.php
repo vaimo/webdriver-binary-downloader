@@ -3,24 +3,25 @@
  * Copyright © Vaimo Group. All rights reserved.
  * See LICENSE_VAIMO.txt for license details.
  */
-namespace Vaimo\WebDriverBinaryDownloader\Installer;
+namespace Vaimo\WebDriverBinaryDownloader\Resolvers;
 
 class VersionResolver
 {
     /**
-     * @var \Composer\Package\Version\VersionParser 
+     * @var \Composer\Package\Version\VersionParser
      */
     private $versionParser;
-    
-    /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Installer\Utils
-     */
-    private $installerUtils;
 
-    public function __construct() 
+    /**
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
+     */
+    private $dataUtils;
+    
+    public function __construct()
     {
         $this->versionParser = new \Composer\Package\Version\VersionParser();
-        $this->installerUtils = new \Vaimo\WebDriverBinaryDownloader\Installer\Utils();
+        
+        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
     }
     
     public function pollForVersion(array $binaryPaths, array $versionPollingConfig)
@@ -38,6 +39,7 @@ class VersionResolver
                 $output = '';
 
                 $pollCommand = sprintf($callTemplate, $path);
+                
                 $processExecutor->execute($pollCommand, $output);
 
                 $output = str_replace(chr(0), '', trim($output));
@@ -47,9 +49,13 @@ class VersionResolver
                 }
 
                 foreach ($resultPatterns as $pattern) {
-                    preg_match(sprintf('/%s/i', $pattern), $output, $matches);
+                    preg_match(
+                        sprintf('/%s/i', $pattern),
+                        $output,
+                        $matches
+                    );
 
-                    $result = $matches[1] ?? false;
+                    $result = $this->dataUtils->extractValue($matches, 1, false);
 
                     if (!$result) {
                         continue;

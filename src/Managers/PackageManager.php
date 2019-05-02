@@ -3,8 +3,9 @@
  * Copyright © Vaimo Group. All rights reserved.
  * See LICENSE_VAIMO.txt for license details.
  */
-namespace Vaimo\WebDriverBinaryDownloader\Installer;
+namespace Vaimo\WebDriverBinaryDownloader\Managers;
 
+use Composer\Package\PackageInterface;
 use Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser as OsDetector;
 
 class PackageManager
@@ -13,6 +14,11 @@ class PackageManager
      * @var \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface
      */
     private $pluginConfig;
+
+    /**
+     * @var \Composer\Util\Filesystem
+     */
+    private $fileSystem;
     
     /**
      * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
@@ -20,14 +26,14 @@ class PackageManager
     private $platformAnalyser;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Installer\Utils
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
      */
-    private $utils;
+    private $systemUtils;
 
     /**
-     * @var \Composer\Util\Filesystem
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
      */
-    private $fileSystem;
+    private $dataUtils;
 
     /**
      * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
@@ -36,33 +42,45 @@ class PackageManager
         \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
     ) {
         $this->pluginConfig = $pluginConfig;
-        
-        $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->utils = new \Vaimo\WebDriverBinaryDownloader\Installer\Utils();
+
         $this->fileSystem = new \Composer\Util\Filesystem();
+
+        $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
+
+        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
     }
-    
-    public function installBinaries(\Composer\Package\Package $package, $binDir)
+
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess) | Using standard Composer utility class, no alternatives
+     *
+     * @param PackageInterface $package
+     * @param string $binDir
+     * @return string[]
+     * @throws \Exception
+     */
+    public function installBinaries(PackageInterface $package, $binDir)
     {
         $sourceDir = $package->getTargetDir();
+        
         $sourceDir = file_exists(DIRECTORY_SEPARATOR . $sourceDir)
             ? (DIRECTORY_SEPARATOR . $sourceDir)
             : $sourceDir;
 
-        $matches = [];
+        $matches = array();
 
         $binaries = $package->getBinaries();
 
         foreach ($binaries as $binary) {
-            if (file_exists($sourceDir . DIRECTORY_SEPARATOR . $binary)) {
-                $matches[] = $sourceDir . DIRECTORY_SEPARATOR . $binary;
+            if (file_exists($this->systemUtils->composePath($sourceDir, $binary))) {
+                $matches[] = $this->systemUtils->composePath($sourceDir, $binary);
             }
 
-            $globPattern = $sourceDir . DIRECTORY_SEPARATOR . '**' . DIRECTORY_SEPARATOR . $binary;
+            $globPattern = $this->systemUtils->composePath($sourceDir, '**', $binary);
 
             $matches = array_merge(
                 $matches,
-                $this->utils->recursiveGlob($globPattern)
+                $this->systemUtils->recursiveGlob($globPattern)
             );
         }
 
@@ -88,8 +106,11 @@ class PackageManager
 
         foreach (array_filter($matches, 'is_executable') as $fromPath) {
             $fileName = basename($fromPath);
-  
-            $toPath = $binDir . DIRECTORY_SEPARATOR . ($fileRenames[$fileName] ?? $fileName);
+            
+            $toPath = $this->systemUtils->composePath(
+                $binDir,
+                $this->dataUtils->extractValue($fileRenames, $fileName, $fileName)
+            );
 
             $this->fileSystem->copyThenRemove($fromPath, $toPath);
 
