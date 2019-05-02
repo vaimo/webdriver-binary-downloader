@@ -43,7 +43,7 @@ class EnvironmentAnalyser
             return '';
         }
 
-        return $this->versionResolver->pollForVersion(
+        return $this->versionResolver->pollForExecutableVersion(
             $binaryPaths[$platformCode],
             $this->pluginConfig->getBrowserVersionPollingConfig()
         );

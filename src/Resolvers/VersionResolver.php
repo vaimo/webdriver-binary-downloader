@@ -13,6 +13,11 @@ class VersionResolver
     private $versionParser;
 
     /**
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils
+     */
+    private $stringUtils;
+    
+    /**
      * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
@@ -20,11 +25,12 @@ class VersionResolver
     public function __construct()
     {
         $this->versionParser = new \Composer\Package\Version\VersionParser();
-        
+
+        $this->stringUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils();
         $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
     }
     
-    public function pollForVersion(array $binaryPaths, array $versionPollingConfig)
+    public function pollForExecutableVersion(array $binaryPaths, array $versionPollingConfig)
     {
         $processExecutor = new \Composer\Util\ProcessExecutor();
         
@@ -73,5 +79,31 @@ class VersionResolver
         }
 
         return '';
+    }
+    
+    public function pollForDriverVersion(array $versionCheckUrls, $browserVersion)
+    {
+        $versionCheckUrls = $this->dataUtils->assureArrayValue($versionCheckUrls);
+        
+        $variables = array(
+            'major' => $this->stringUtils->strTokOffset($browserVersion, 1),
+            'major-minor' => $this->stringUtils->strTokOffset($browserVersion, 2)
+        );
+
+        $version = null;
+        
+        foreach ($versionCheckUrls as $versionCheckUrl) {
+            if ($version) {
+                break;
+            }
+
+            $version = trim(
+                @file_get_contents(
+                    $this->stringUtils->stringFromTemplate($versionCheckUrl, $variables)
+                )
+            );
+        }
+
+        return $version;
     }
 }

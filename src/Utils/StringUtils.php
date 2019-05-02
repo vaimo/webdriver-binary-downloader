@@ -26,7 +26,7 @@ class StringUtils
     public function strTokOffset($value, $offset)
     {
         try {
-            $cutOff = strpos($value, '.', $offset);    
+            $cutOff = strpos($value, '.', $offset);
         } catch (\Exception $exception) {
             $cutOff = 0;
         }

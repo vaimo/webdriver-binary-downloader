@@ -49,11 +49,6 @@ class ProjectAnalyser
      * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
-
-    /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils
-     */
-    private $stringUtils;
     
     /**
      * @var \Composer\Package\CompletePackage
@@ -85,7 +80,6 @@ class ProjectAnalyser
         
         $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
         $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
-        $this->stringUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils();
     }
     
     public function resolvePlatformSupport()
@@ -131,7 +125,7 @@ class ProjectAnalyser
             );
         }
         
-        $installedVersion = $this->versionResolver->pollForVersion(
+        $installedVersion = $this->versionResolver->pollForExecutableVersion(
             $binaries,
             $this->pluginConfig->getDriverVersionPollingConfig()
         );
@@ -170,27 +164,11 @@ class ProjectAnalyser
                 ConfigInterface::REQUEST_VERSION,
                 array()
             );
-
-            $versionCheckUrls = $this->dataUtils->assureArrayValue($versionCheckUrls);
-
-            $browserVersion = $this->resolveBrowserVersion();
             
-            $variables = array(
-                'major' => $this->stringUtils->strTokOffset($browserVersion, 1),
-                'major-minor' => $this->stringUtils->strTokOffset($browserVersion, 2)
+            $version = $this->versionResolver->pollForDriverVersion(
+                $versionCheckUrls,
+                $this->resolveBrowserVersion()
             );
-
-            foreach ($versionCheckUrls as $versionCheckUrl) {
-                if ($version) {
-                    break;
-                }
-
-                $version = trim(
-                    @file_get_contents(
-                        $this->stringUtils->stringFromTemplate($versionCheckUrl, $variables)
-                    )
-                );
-            }
         }
         
         if (!$version) {
