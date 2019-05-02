@@ -46,7 +46,7 @@ class VersionResolver
 
         foreach ($binaryPaths as $path) {
             if ($path !== null && !is_executable($path)) {
-                $this->writeLn(sprintf('### <comment>Polling skipped:</comment> <info>%s</info>', $path));
+                $this->writeTitle('Polling skipped', $path);
 
                 continue;
             }
@@ -56,7 +56,7 @@ class VersionResolver
 
                 $pollCommand = sprintf($callTemplate, $path);
 
-                $this->writeLn(sprintf('### <comment>Polling local version with:</comment> <info>%s</info>', $pollCommand));
+                $this->writeTitle('Polling local version with', $pollCommand);
                 
                 $processExecutor->execute($pollCommand, $output);
 
@@ -116,10 +116,8 @@ class VersionResolver
             }
 
             $queryUrl = $this->stringUtils->stringFromTemplate($versionCheckUrl, $variables);
-            
-            $this->writeLn(
-                sprintf('### <comment>Polling remote version with:</comment> <info>%s</info>', $queryUrl)
-            );
+
+            $this->writeTitle('Polling remote version with', $queryUrl);
 
             $result = @file_get_contents($queryUrl);
 
@@ -139,6 +137,13 @@ class VersionResolver
         }
 
         return $version;
+    }
+    
+    private function writeTitle($title, $subTitle)
+    {
+        $this->writeLn(
+            sprintf('### <comment>%s:</comment> <info>%s</info>', $title, $subTitle)
+        );
     }
     
     private function writeLn($message)
