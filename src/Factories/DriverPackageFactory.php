@@ -115,8 +115,8 @@ class DriverPackageFactory
         $variables = array(
             'version' => $version,
             'hash' => $fileHash,
-            'major' => $this->extractPartialVersion($version, 1),
-            'major-minor' => $this->extractPartialVersion($version, 2)
+            'major' => $this->stringUtils->strTokOffset($version, 1),
+            'major-minor' => $this->stringUtils->strTokOffset($version, 2)
         );
 
         $fileName = $this->stringUtils->stringFromTemplate(
@@ -127,15 +127,6 @@ class DriverPackageFactory
         return $this->stringUtils->stringFromTemplate(
             $requestConfig[ConfigInterface::REQUEST_DOWNLOAD],
             array_replace($variables, array('file' => $fileName))
-        );
-    }
-
-    private function extractPartialVersion($version, $segmentCount)
-    {
-        return substr(
-            $version,
-            0,
-            strpos($version, '.', $segmentCount) ?: strlen($version)
         );
     }
 

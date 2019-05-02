@@ -10,6 +10,9 @@
             "new path variables for having partial version in file names: major (X), major-minor (X.Y)",
             "retry driver download when download failed for some reason (2 retries)"
         ],
+        "fix": [
+            "fail whole composer run when driver fails to download"
+        ],
         "maintenance": [
             "introduced the use of Static Code Analysis tools",
             "code downgraded so to make the package installable on relatively old php versions"

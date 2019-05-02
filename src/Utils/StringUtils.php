@@ -22,4 +22,15 @@ class StringUtils
             $template
         );
     }
+
+    public function strTokOffset($value, $offset)
+    {
+        try {
+            $cutOff = strpos($value, '.', $offset);    
+        } catch (\Exception $exception) {
+            $cutOff = 0;
+        }
+        
+        return substr($value, 0, $cutOff ?: strlen($value));
+    }
 }

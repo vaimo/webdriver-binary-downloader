@@ -51,9 +51,19 @@ class ProjectAnalyser
     private $dataUtils;
 
     /**
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils
+     */
+    private $stringUtils;
+    
+    /**
      * @var \Composer\Package\CompletePackage
      */
     private $ownerPackage;
+
+    /**
+     * @var string
+     */
+    private $browserVersion;
     
     /**
      * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
@@ -75,6 +85,7 @@ class ProjectAnalyser
         
         $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
         $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
+        $this->stringUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils();
     }
     
     public function resolvePlatformSupport()
@@ -145,43 +156,45 @@ class ProjectAnalyser
         $preferences = $this->pluginConfig->getPreferences();
         $requestConfig = $this->pluginConfig->getRequestUrlConfig();
 
-        $version = $preferences['version'];
+        $version = $this->dataUtils->extractValue($preferences, 'version');
         
-        if (!$preferences['version']) {
+        if (!$version) {
             $version = $this->resolveBrowserDriverVersion(
-                $this->environmentAnalyser->resolveBrowserVersion()
+                $this->resolveBrowserVersion()
             );
+        }
 
+        if (!$version) {
             $versionCheckUrls = $this->dataUtils->extractValue(
                 $requestConfig,
                 ConfigInterface::REQUEST_VERSION,
                 array()
             );
+
+            $versionCheckUrls = $this->dataUtils->assureArrayValue($versionCheckUrls);
+
+            $browserVersion = $this->resolveBrowserVersion();
             
-            if (!is_array($versionCheckUrls)) {
-                $versionCheckUrls = array_filter(
-                    array($versionCheckUrls)
-                );
-            }
+            $variables = array(
+                'major' => $this->stringUtils->strTokOffset($browserVersion, 1),
+                'major-minor' => $this->stringUtils->strTokOffset($browserVersion, 2)
+            );
 
             foreach ($versionCheckUrls as $versionCheckUrl) {
-                if (!$version) {
+                if ($version) {
                     break;
                 }
 
                 $version = trim(
-                    @file_get_contents($versionCheckUrl)
+                    @file_get_contents(
+                        $this->stringUtils->stringFromTemplate($versionCheckUrl, $variables)
+                    )
                 );
             }
-
-            if (!$version) {
-                $versionMap = array_filter($this->pluginConfig->getBrowserDriverVersionMap());
-                $version = reset($versionMap);
-                
-                if (is_array($version)) {
-                    $version = reset($version);
-                }
-            }
+        }
+        
+        if (!$version) {
+            $version = $this->getHighestDriverVersion();
         }
 
         try {
@@ -217,6 +230,19 @@ class ProjectAnalyser
 
         return '';
     }
+    
+    private function getHighestDriverVersion()
+    {
+        $versionMap = array_filter($this->pluginConfig->getBrowserDriverVersionMap());
+        
+        $version = reset($versionMap);
+
+        if (is_array($version)) {
+            $version = reset($version);
+        }
+        
+        return $version;
+    }
 
     public function resolvePackageForNamespace(array $packages, $namespace)
     {
@@ -241,5 +267,14 @@ class ProjectAnalyser
         }
 
         return $this->ownerPackage;
+    }
+    
+    public function resolveBrowserVersion()
+    {
+        if ($this->browserVersion === null) {
+            $this->browserVersion = $this->environmentAnalyser->resolveBrowserVersion();
+        }
+
+        return $this->browserVersion;
     }
 }
