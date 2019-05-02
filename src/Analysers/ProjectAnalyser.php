@@ -14,7 +14,7 @@ class ProjectAnalyser
      * @var \Composer\Package\Version\VersionParser
      */
     private $versionParser;
-    
+
     /**
      * @var \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface
      */
@@ -39,7 +39,7 @@ class ProjectAnalyser
      * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser
      */
     private $packageAnalyser;
-    
+
     /**
      * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
      */
@@ -49,7 +49,7 @@ class ProjectAnalyser
      * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
-    
+
     /**
      * @var \Composer\Package\CompletePackage
      */
@@ -59,7 +59,7 @@ class ProjectAnalyser
      * @var string
      */
     private $browserVersion;
-    
+
     /**
      * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
      */
@@ -77,22 +77,22 @@ class ProjectAnalyser
         $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
         $this->packageAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
         $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver();
-        
+
         $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
         $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
     }
-    
+
     public function resolvePlatformSupport()
     {
         $platformCode = $this->platformAnalyser->getPlatformCode();
-        
+
         $fileNames = $this->pluginConfig->getExecutableFileNames();
-        
+
         return (bool)(
             $this->dataUtils->extractValue($fileNames, $platformCode, false)
         );
     }
-    
+
     public function resolveInstalledDriverVersion($binaryDir)
     {
         $platformCode = $this->platformAnalyser->getPlatformCode();
@@ -106,16 +106,16 @@ class ProjectAnalyser
 
         $executableName = $executableNames[$platformCode];
         $executableRenames = $this->pluginConfig->getExecutableFileRenames();
-        
+
         $driverPath = realpath(
             $this->systemUtils->composePath(
                 $binaryDir,
                 $this->dataUtils->extractValue($executableRenames, $executableName, $executableName)
             )
         );
-        
+
         $binaries = array($driverPath);
-        
+
         if ($platformCode === Platform::TYPE_WIN64 || $platformCode === Platform::TYPE_WIN32) {
             $binaries = array_merge(
                 $binaries,
@@ -124,7 +124,7 @@ class ProjectAnalyser
                 }, $binaries)
             );
         }
-        
+
         $installedVersion = $this->versionResolver->pollForExecutableVersion(
             $binaries,
             $this->pluginConfig->getDriverVersionPollingConfig()
@@ -151,7 +151,7 @@ class ProjectAnalyser
         $requestConfig = $this->pluginConfig->getRequestUrlConfig();
 
         $version = $this->dataUtils->extractValue($preferences, 'version');
-        
+
         if (!$version) {
             $version = $this->resolveBrowserDriverVersion(
                 $this->resolveBrowserVersion()
@@ -159,18 +159,16 @@ class ProjectAnalyser
         }
 
         if (!$version) {
-            $versionCheckUrls = $this->dataUtils->extractValue(
-                $requestConfig,
-                ConfigInterface::REQUEST_VERSION,
-                array()
+            $versionCheckUrls = $this->dataUtils->assureArrayValue(
+                $this->dataUtils->extractValue($requestConfig, ConfigInterface::REQUEST_VERSION, array())
             );
-            
+
             $version = $this->versionResolver->pollForDriverVersion(
                 $versionCheckUrls,
                 $this->resolveBrowserVersion()
             );
         }
-        
+
         if (!$version) {
             $version = $this->getHighestDriverVersion();
         }
@@ -180,7 +178,7 @@ class ProjectAnalyser
         } catch (\UnexpectedValueException $exception) {
             throw new \Exception(sprintf('Incorrect version string: "%s"', $version));
         }
-        
+
         return $version;
     }
 
@@ -208,17 +206,17 @@ class ProjectAnalyser
 
         return '';
     }
-    
+
     private function getHighestDriverVersion()
     {
         $versionMap = array_filter($this->pluginConfig->getBrowserDriverVersionMap());
-        
+
         $version = reset($versionMap);
 
         if (is_array($version)) {
             $version = reset($version);
         }
-        
+
         return $version;
     }
 

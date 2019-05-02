@@ -83,8 +83,6 @@ class VersionResolver
     
     public function pollForDriverVersion(array $versionCheckUrls, $browserVersion)
     {
-        $versionCheckUrls = $this->dataUtils->assureArrayValue($versionCheckUrls);
-        
         $variables = array(
             'major' => $this->stringUtils->strTokOffset($browserVersion, 1),
             'major-minor' => $this->stringUtils->strTokOffset($browserVersion, 2)
