@@ -83,8 +83,10 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
 
         $repositoryManager = $this->composerRuntime->getRepositoryManager();
         $localRepository = $repositoryManager->getLocalRepository();
+
+        $packageResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\PackageResolver();
         
-        $pluginPackage = $projectAnalyser->resolvePackageForNamespace(
+        $pluginPackage = $packageResolver->resolvePackageForNamespace(
             $localRepository->getCanonicalPackages(),
             get_class($pluginConfig)
         );

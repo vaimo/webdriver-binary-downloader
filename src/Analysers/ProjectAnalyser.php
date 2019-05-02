@@ -51,11 +51,6 @@ class ProjectAnalyser
     private $dataUtils;
 
     /**
-     * @var \Composer\Package\CompletePackage
-     */
-    private $ownerPackage;
-
-    /**
      * @var string
      */
     private $browserVersion;
@@ -78,7 +73,6 @@ class ProjectAnalyser
         $this->versionParser = new \Composer\Package\Version\VersionParser();
 
         $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->packageAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
         $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver();
 
         $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
@@ -221,31 +215,6 @@ class ProjectAnalyser
         }
 
         return $version;
-    }
-
-    public function resolvePackageForNamespace(array $packages, $namespace)
-    {
-        if ($this->ownerPackage === null) {
-            foreach ($packages as $package) {
-                if (!$this->packageAnalyser->isPluginPackage($package)) {
-                    continue;
-                }
-
-                if (!$this->packageAnalyser->ownsNamespace($package, $namespace)) {
-                    continue;
-                }
-                
-                $this->ownerPackage = $package;
-
-                break;
-            }
-        }
-
-        if (!$this->ownerPackage) {
-            throw new \Exception('Failed to detect the plugin package');
-        }
-
-        return $this->ownerPackage;
     }
     
     public function resolveBrowserVersion()
