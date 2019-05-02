@@ -98,6 +98,8 @@ class DownloadManager
                  * in interface footprint).
                  */
                 $downloader->download($package, $targetDir, false);
+
+                break;
             } catch (\Exception $exception) {
                 if (!$retryCount) {
                     throw $exception;
