@@ -136,10 +136,20 @@ class ProjectAnalyser
                 $this->environmentAnalyser->resolveBrowserVersion()
             );
 
-            $versionCheckUrl = $requestConfig[ConfigInterface::REQUEST_VERSION];
+            $versionCheckUrls = $requestConfig[ConfigInterface::REQUEST_VERSION] ?? [];
+            
+            if (!is_array($versionCheckUrls)) {
+                $versionCheckUrls = [$versionCheckUrls];
+            }
 
-            if (!$version && $versionCheckUrl) {
-                $version = trim(@file_get_contents($versionCheckUrl));
+            foreach ($versionCheckUrls as $versionCheckUrl) {
+                if (!$version) {
+                    break;
+                }
+
+                $version = trim(
+                    @file_get_contents($versionCheckUrl)
+                );
             }
 
             if (!$version) {

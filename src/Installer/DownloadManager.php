@@ -5,6 +5,7 @@
  */
 namespace Vaimo\WebDriverBinaryDownloader\Installer;
 
+use Composer\Package\PackageInterface;
 use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
 
 class DownloadManager
@@ -67,7 +68,7 @@ class DownloadManager
         $this->utils = new \Vaimo\WebDriverBinaryDownloader\Installer\Utils();
     }
     
-    public function downloadRelease(array $versions)
+    public function downloadRelease(array $versions, $retryCount = 0)
     {
         $targetDir = $this->utils->composePath(
             rtrim($this->cacheManager->getRoot(), DIRECTORY_SEPARATOR),
@@ -78,16 +79,7 @@ class DownloadManager
             $package = $this->createComposerVirtualPackage($version, $targetDir);
             
             try {
-                /** @var \Composer\Downloader\DownloaderInterface $downloader */
-                $downloader = $this->downloadManager->getDownloaderForInstalledPackage($package);
-
-                /**
-                 * Some downloaders have the option to mute the output, which is why 
-                 * there the third call argument.
-                 */
-                $downloader->download($package, $targetDir, false);
-                
-                return $package;
+                return $this->downloadPackage($package, $targetDir, $retryCount);
             } catch (\Composer\Downloader\TransportException $exception) {
                 if ($exception->getStatusCode() === 404 && $versions) {
                     continue;
@@ -113,6 +105,29 @@ class DownloadManager
         }
 
         throw new \Exception('Failed to download requested driver');
+    }
+    
+    private function downloadPackage(PackageInterface $package, $targetDir, $retryCount = 0) 
+    {
+        do {
+            try {
+                /** @var \Composer\Downloader\DownloaderInterface $downloader */
+                $downloader = $this->downloadManager->getDownloaderForInstalledPackage($package);
+
+                /**
+                 * Some downloader types have the option to mute the output,
+                 * which is why there is the third call argument (not present 
+                 * in interface footprint).  
+                 */
+                $downloader->download($package, $targetDir, false);
+            } catch (\Exception $exception) {
+                if (!$retryCount) {
+                    throw $exception;
+                }
+            }
+        } while ($retryCount-- > 0);
+        
+        return $package;
     }
     
     private function createComposerVirtualPackage($version, $targetDir)
@@ -181,15 +196,31 @@ class DownloadManager
         $driverHashes = $this->pluginConfig->getDriverVersionHashMap();
         
         $fileHash = $driverHashes[$version] ?? '';
+
+        $variables = [
+            'version' => $version, 
+            'hash' => $fileHash, 
+            'major' => $this->extractPartialVersion($version, 1),
+            'major-minor' => $this->extractPartialVersion($version, 2)
+        ];
         
         $fileName = $this->utils->stringFromTemplate(
             $remoteFiles[$platformCode],
-            ['version' => $version, 'hash' => $fileHash]
+            $variables
         );
         
         return $this->utils->stringFromTemplate(
             $requestConfig[ConfigInterface::REQUEST_DOWNLOAD],
-            ['version' => $version, 'file' => $fileName, 'hash' => $fileHash]
+            array_replace($variables, ['file' => $fileName])
+        );
+    }
+    
+    private function extractPartialVersion($version, $segmentCount)
+    {
+        return substr(
+            $version, 
+            0, 
+            strpos($version, '.', $segmentCount) ?: strlen($version)
         );
     }
 }

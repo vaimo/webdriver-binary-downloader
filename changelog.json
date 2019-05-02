@@ -1,7 +1,23 @@
 {
+    "_readme": [
+        "The contents of this file are used to generate CHANGELOG.md; It's kept in JSON/parsable format to make it",
+        "possible to generate change-logs in other formats as well (when needed) and to do automatic releases based on",
+        "added change-log records. More on how to use it: https://github.com/vaimo/composer-changelogs"
+    ],
+    "2.1.0": {
+        "feature": [
+            "allow multiple version checking url's to cater for download sources that might have different mechanisms for fetching information about latest driver versions",
+            "new path variables for having partial version in file names: major (X), major-minor (X.Y)",
+            "retry driver download when download failed for some reason (2 retries)"
+        ],
+        "maintenance": [
+            "introduced the use of Static Code Analysis tools",
+            "code downgraded so to make the package installable on relatively old php versions"
+        ]
+    },
     "2.0.0": {
         "breaking": [
-            "(config) version polling output parser switched to use refex pattern matching instead of relying on sscanf"
+            "(config) version polling output parser switched to use RegEx pattern matching instead of relying on sscanf"
         ],
         "feature": [
             "allow driver version polling to use version aliases (required for some drivers that use multiple versioning schemes (like EdgeDriver))",

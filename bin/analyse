@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+: <<'COPYRIGHT'
+ Copyright (c) Vaimo Group. All rights reserved.
+ See LICENSE_VAIMO.txt for license details.
+COPYRIGHT
+
+type=${1}
+
+if [ "${type}" == "" ] || [ "${type}" == "phpcs" ] ; then
+    vendor/bin/phpcs -p src
+    
+    result=${?}
+
+    if [ ${result} -gt 0 ] ; then
+        exit 1
+    fi
+fi
+
+if [ "${type}" == "" ] || [ "${type}" == "phpcpd" ] ; then
+    vendor/bin/phpcpd src
+    
+    result=${?}
+
+    if [ ${result} -gt 0 ] ; then
+        exit 1
+    fi
+fi
+
+if [ "${type}" == "" ] || [ "${type}" == "phpmd" ] ; then
+    vendor/bin/phpmd src text phpmd.xml --suffixes php
+
+    result=${?}
+
+    if [ ${result} -gt 0 ] ; then
+        exit 1
+    fi
+fi

@@ -40,7 +40,9 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
     
     public function executeWithConfig(ConfigInterface $pluginConfig)
     {
-        $binaryDir = $this->composerRuntime->getConfig()->get('bin-dir');
+        $composerConfig = $this->composerRuntime->getConfig();
+        
+        $binaryDir = $composerConfig->get('bin-dir');
         
         $projectAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\ProjectAnalyser($pluginConfig);
         $packageManager = new \Vaimo\WebDriverBinaryDownloader\Installer\PackageManager($pluginConfig);
@@ -91,7 +93,7 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         );
         
         try {
-            $package = $downloadManager->downloadRelease([$version]);
+            $package = $downloadManager->downloadRelease([$version], 2);
         } catch (\Exception $exception) {
             $this->io->write(
                 sprintf('<error>%s</error>', $exception->getMessage())
@@ -114,7 +116,9 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
 
     private function createCacheManager($cacheName)
     {
-        $cacheDir = $this->composerRuntime->getConfig()->get('cache-dir');
+        $composerConfig = $this->composerRuntime->getConfig();
+
+        $cacheDir = $composerConfig->get('cache-dir');
         
         return new \Composer\Cache(
             $this->io,
