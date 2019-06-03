@@ -2,6 +2,13 @@
 
 _This file has been auto-generated from the contents of changelog.json_
 
+## 2.2.1 (2019-05-03)
+
+### Fix
+
+* version polling did not result in console log output in some cases where executable was not found at all
+
+
 ## 2.2.0 (2019-05-03)
 
 ### Feature
