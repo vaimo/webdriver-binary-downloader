@@ -83,6 +83,16 @@ class DriverPackageFactory
             );
         }
 
+        /**
+         * This guarantees that parallel runs on same system (that might be sharing the cache folder) do not
+         * end up crashing into each-other when the package is being downloaded (where tmp cache file unlinking)
+         * imght cause issues when the package uid hash generation ends up creating same file name reference on
+         * multiple runs.
+         */
+        $package->setExtra(array(
+            'uid' => md5(uniqid(rand(), true))
+        ));
+        
         $package->setBinaries(array($executableName));
         $package->setInstallationSource('dist');
 

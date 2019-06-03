@@ -88,10 +88,10 @@ class DownloadManager
     private function downloadPackage(PackageInterface $package, $targetDir, $retryCount = 0)
     {
         do {
-            try {
-                /** @var \Composer\Downloader\DownloaderInterface $downloader */
-                $downloader = $this->downloadManager->getDownloaderForInstalledPackage($package);
+            /** @var \Composer\Downloader\DownloaderInterface $downloader */
+            $downloader = $this->downloadManager->getDownloaderForInstalledPackage($package);
 
+            try {
                 /**
                  * Some downloader types have the option to mute the output,
                  * which is why there is the third call argument (not present
@@ -104,6 +104,8 @@ class DownloadManager
                 if (!$retryCount) {
                     throw $exception;
                 }
+                
+                sleep(2);
             }
         } while ($retryCount-- > 0);
         

@@ -4,6 +4,13 @@
         "possible to generate change-logs in other formats as well (when needed) and to do automatic releases based on",
         "added change-log records. More on how to use it: https://github.com/vaimo/composer-changelogs"
     ],
+    "2.2.2": {
+        "fix": [
+            "make downloader failure reties to be done after regular intervals (set to 2 seconds) to alleviate issues with clashes on cache cleanup",
+            "increase downloader failure retries to 5 (used to be 2)",
+            "parallel runs of the download for certain driver always use unique tmp paths for downloaded package (random value introduced into the generation of the cache path)"
+        ]
+    },
     "2.2.1": {
         "fix": [
             "version polling did not result in console log output in some cases where executable was not found at all"

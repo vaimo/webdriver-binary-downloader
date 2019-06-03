@@ -103,7 +103,7 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         );
         
         try {
-            $package = $downloadManager->downloadRelease(array($version), 2);
+            $package = $downloadManager->downloadRelease(array($version), 5);
         } catch (\Exception $exception) {
             $this->cliIO->write(
                 sprintf('<error>%s</error>', $exception->getMessage())
