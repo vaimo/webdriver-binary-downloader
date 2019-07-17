@@ -12,3 +12,10 @@ to implement whilst providing support for browser version checking and browser d
 binary download.
 
 More information on recent changes [HERE](./CHANGELOG.md).
+
+## Usage examples
+
+* https://github.com/vaimo/binary-chromedriver
+* https://github.com/vaimo/binary-geckodriver
+* https://github.com/vaimo/binary-edgedriver
+* https://github.com/vaimo/binary-phantomjs
