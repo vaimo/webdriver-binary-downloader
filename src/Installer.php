@@ -6,6 +6,7 @@
 namespace Vaimo\WebDriverBinaryDownloader;
 
 use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+use Vaimo\WebDriverBinaryDownloader\Composer\Config;
 
 class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\InstallerInterface
 {
@@ -42,14 +43,17 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
     {
         $composerConfig = $this->composerRuntime->getConfig();
         
-        $binaryDir = $composerConfig->get('bin-dir');
+        $binaryDir = $composerConfig->get(Config::BIN_DIR);
         
         $projectAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\ProjectAnalyser(
             $pluginConfig,
             $this->cliIO->isDebug() ? $this->cliIO : null
         );
         
-        $packageManager = new \Vaimo\WebDriverBinaryDownloader\Managers\PackageManager($pluginConfig);
+        $packageManager = new \Vaimo\WebDriverBinaryDownloader\Managers\PackageManager(
+            $pluginConfig,
+            $composerConfig->get(Config::VENDOR_DIR)
+        );
 
         $driverName = $pluginConfig->getDriverName();
         
@@ -91,15 +95,13 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
             get_class($pluginConfig)
         );
         
-        $virtualPkgFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory(
-            $pluginPackage,
-            $pluginConfig
-        );
-        
         $downloadManager = new \Vaimo\WebDriverBinaryDownloader\Managers\DownloadManager(
+            $pluginPackage,
             $this->composerRuntime->getDownloadManager(),
+            $this->composerRuntime->getInstallationManager(),
             $this->createCacheManager($pluginPackage->getName()),
-            $virtualPkgFactory
+            new \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory(),
+            $pluginConfig
         );
         
         try {

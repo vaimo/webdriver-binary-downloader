@@ -36,12 +36,20 @@ class PackageManager
     private $dataUtils;
 
     /**
+     * @var string
+     */
+    private $vendorDir;
+
+    /**
      * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param string $vendorDir
      */
     public function __construct(
-        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        $vendorDir
     ) {
         $this->pluginConfig = $pluginConfig;
+        $this->vendorDir = $vendorDir;
 
         $this->fileSystem = new \Composer\Util\Filesystem();
 
@@ -61,11 +69,7 @@ class PackageManager
      */
     public function installBinaries(PackageInterface $package, $binDir)
     {
-        $sourceDir = $package->getTargetDir();
-        
-        $sourceDir = file_exists(DIRECTORY_SEPARATOR . $sourceDir)
-            ? (DIRECTORY_SEPARATOR . $sourceDir)
-            : $sourceDir;
+        $sourceDir = $this->systemUtils->composePath($this->vendorDir, $package->getTargetDir());
 
         $matches = array();
 
