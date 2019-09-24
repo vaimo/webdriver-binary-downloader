@@ -29,7 +29,7 @@ class PackageResolver
     }
 
     
-    public function resolvePackageForNamespace(array $packages, $namespace)
+    public function resolveForNamespace(array $packages, $namespace)
     {
         $packages = array_merge(
             $this->additionalPackages,
