@@ -4,6 +4,12 @@
         "possible to generate change-logs in other formats as well (when needed) and to do automatic releases based on",
         "added change-log records. More on how to use it: https://github.com/vaimo/composer-changelogs"
     ],
+    "2.2.4": {
+        "fix": [
+            "allow the plugin to be installed as dependency to globally installed package; previously caused every composer call to crash with class declaration conflict",
+            "don't download the web-drivers for every project when plugin installed globally"
+        ]
+    },
     "2.2.3": {
         "fix": [
             "due to the fact that download target folder was tucked away in Composer cache, odd errors and false failures were prone to happen on systems where Composer cache was shared between multiple parallel runs; change: now downloading into the config owner package (that provides download links, etc)"
