@@ -8,17 +8,34 @@ namespace Vaimo\WebDriverBinaryDownloader\Resolvers;
 class PackageResolver
 {
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser
+     * @var \Composer\Package\PackageInterface[]
+     */
+    private $additionalPackages;
+
+    /**
+     * @var \Vaimo\ComposerChangelogs\Analysers\PackageAnalyser
      */
     private $packageAnalyser;
-    
-    public function __construct()
-    {
-        $this->packageAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
+
+    /**
+     * @param \Composer\Package\PackageInterface[] $additionalPackages
+     */
+    public function __construct(
+        array $additionalPackages = array()
+    ) {
+        $this->additionalPackages = $additionalPackages;
+
+        $this->packageAnalyser = new \Vaimo\ComposerChangelogs\Analysers\PackageAnalyser();
     }
+
     
     public function resolvePackageForNamespace(array $packages, $namespace)
     {
+        $packages = array_merge(
+            $this->additionalPackages,
+            array_values($packages)
+        );
+
         foreach ($packages as $package) {
             if (!$this->packageAnalyser->isPluginPackage($package)) {
                 continue;
@@ -31,6 +48,8 @@ class PackageResolver
             return $package;
         }
 
-        throw new \Exception('Failed to detect the plugin package');
+        throw new \Vaimo\WebDriverBinaryDownloader\Exceptions\RuntimeException(
+            'Failed to detect the plugin package'
+        );
     }
 }

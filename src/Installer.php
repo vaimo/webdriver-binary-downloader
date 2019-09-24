@@ -21,11 +21,6 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
     private $cliIO;
     
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
-     */
-    private $systemUtils;
-    
-    /**
      * @param \Composer\Composer $composerRuntime
      * @param \Composer\IO\IOInterface $cliIO
      */
@@ -35,8 +30,6 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
     ) {
         $this->composerRuntime = $composerRuntime;
         $this->cliIO = $cliIO;
-        
-        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
     }
     
     public function executeWithConfig(ConfigInterface $pluginConfig)
@@ -84,25 +77,20 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         $this->cliIO->write(
             sprintf('<info>Installing <comment>%s</comment> (v%s)</info>', $driverName, $version)
         );
-
-        $repositoryManager = $this->composerRuntime->getRepositoryManager();
-        $localRepository = $repositoryManager->getLocalRepository();
-
-        $packageResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\PackageResolver();
         
-        $pluginPackage = $packageResolver->resolvePackageForNamespace(
-            $localRepository->getCanonicalPackages(),
-            get_class($pluginConfig)
+        $composerCtxFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\ComposerContextFactory(
+            $this->composerRuntime
         );
         
-        $downloadManager = new \Vaimo\WebDriverBinaryDownloader\Managers\DownloadManager(
-            $pluginPackage,
-            $this->composerRuntime->getDownloadManager(),
-            $this->composerRuntime->getInstallationManager(),
-            $this->createCacheManager($pluginPackage->getName()),
-            new \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory(),
-            $pluginConfig
+        $composerCtx = $composerCtxFactory->create();
+
+        $dlManagerFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\DownloadManagerFactory(
+            $composerCtx,
+            $this->cliIO
         );
+        
+        $downloadManager = $dlManagerFactory->create($pluginConfig);
+        ;
         
         try {
             $package = $downloadManager->downloadRelease(array($version), 5);
@@ -124,17 +112,5 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
                 sprintf('<error>%s</error>', $exception->getMessage())
             );
         }
-    }
-
-    private function createCacheManager($cacheName)
-    {
-        $composerConfig = $this->composerRuntime->getConfig();
-
-        $cacheDir = $composerConfig->get('cache-dir');
-        
-        return new \Composer\Cache(
-            $this->cliIO,
-            $this->systemUtils->composePath($cacheDir, 'files', $cacheName, 'downloads')
-        );
     }
 }

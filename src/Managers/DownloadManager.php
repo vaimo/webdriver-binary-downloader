@@ -51,12 +51,12 @@ class DownloadManager
     private $systemUtils;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils 
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils 
+     * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils
      */
     private $stringUtils;
     
@@ -115,16 +115,16 @@ class DownloadManager
         );
 
         $fullPath = $this->systemUtils->composePath(
-            $this->installationManager->getInstallPath($this->ownerPackage), 
+            $this->installationManager->getInstallPath($this->ownerPackage),
             'downloads'
         );
 
         while ($version = array_shift($versions)) {
             $package = $this->driverPkgFactory->create(
                 $name,
-                $this->getDownloadUrl($version), 
-                $version, 
-                $relativePath, 
+                $this->getDownloadUrl($version),
+                $version,
+                $relativePath,
                 array($executableName)
             );
 

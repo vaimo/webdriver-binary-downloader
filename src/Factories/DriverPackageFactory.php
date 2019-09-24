@@ -5,8 +5,6 @@
  */
 namespace Vaimo\WebDriverBinaryDownloader\Factories;
 
-use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
-
 class DriverPackageFactory
 {
     /**
@@ -14,7 +12,7 @@ class DriverPackageFactory
      */
     private $versionParser;
     
-    public function __construct() 
+    public function __construct()
     {
         $this->versionParser = new \Composer\Package\Version\VersionParser();
     }
