@@ -13,7 +13,7 @@ class PackageResolver
     private $additionalPackages;
 
     /**
-     * @var \Vaimo\ComposerChangelogs\Analysers\PackageAnalyser
+     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser
      */
     private $packageAnalyser;
 
@@ -25,7 +25,7 @@ class PackageResolver
     ) {
         $this->additionalPackages = $additionalPackages;
 
-        $this->packageAnalyser = new \Vaimo\ComposerChangelogs\Analysers\PackageAnalyser();
+        $this->packageAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
     }
 
     
@@ -37,10 +37,6 @@ class PackageResolver
         );
 
         foreach ($packages as $package) {
-            if (!$this->packageAnalyser->isPluginPackage($package)) {
-                continue;
-            }
-
             if (!$this->packageAnalyser->ownsNamespace($package, $namespace)) {
                 continue;
             }
