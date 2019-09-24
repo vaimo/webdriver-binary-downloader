@@ -34,6 +34,18 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
     
     public function executeWithConfig(ConfigInterface $pluginConfig)
     {
+        $composerCtxFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\ComposerContextFactory(
+            $this->composerRuntime
+        );
+
+        $composerCtx = $composerCtxFactory->create();
+
+        $downloadStrategy = new \Vaimo\WebDriverBinaryDownloader\Strategies\DownloadStrategy($composerCtx);
+
+        if (!$downloadStrategy->shouldAllow()) {
+            return;
+        }
+        
         $composerConfig = $this->composerRuntime->getConfig();
         
         $binaryDir = $composerConfig->get(Config::BIN_DIR);
@@ -77,18 +89,6 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         $this->cliIO->write(
             sprintf('<info>Installing <comment>%s</comment> (v%s)</info>', $driverName, $version)
         );
-        
-        $composerCtxFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\ComposerContextFactory(
-            $this->composerRuntime
-        );
-        
-        $composerCtx = $composerCtxFactory->create();
-
-        $downloadStrategy = new \Vaimo\WebDriverBinaryDownloader\Strategies\DownloadStrategy($composerCtx);
-        
-        if (!$downloadStrategy->shouldAllow()) {
-            return;
-        }
         
         $dlManagerFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\DownloadManagerFactory(
             $composerCtx,
