@@ -8,7 +8,7 @@ namespace Vaimo\WebDriverBinaryDownloader\Strategies;
 class DownloadStrategy
 {
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Composer\Context 
+     * @var \Vaimo\WebDriverBinaryDownloader\Composer\Context
      */
     private $composerContext;
 
