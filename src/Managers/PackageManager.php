@@ -71,6 +71,9 @@ class PackageManager
     {
         $sourceDir = $this->systemUtils->composePath($this->vendorDir, $package->getTargetDir());
 
+        dump($this->vendorDir);
+        dump($package->getTargetDir());
+
         $matches = array();
 
         $binaries = $package->getBinaries();
