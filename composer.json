@@ -1,5 +1,5 @@
 {
-    "name": "vaimo/webdriver-binary-downloader",
+    "name": "bolt/webdriver-binary-downloader",
     "type": "library",
     "license": "MIT",
     "description": "General-issue library that enables building any kind of WebDriver binary downloader",
