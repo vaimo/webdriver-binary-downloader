@@ -4,12 +4,12 @@
     "license": "MIT",
     "description": "General-issue library that enables building any kind of WebDriver binary downloader",
     "require": {
-        "php": ">=5.3.0",
-        "composer/composer": "^1.0",
-        "composer-plugin-api": "^1.0"
+        "php": ">=7.2.0",
+        "composer/composer": "^1.0 | ^2.0",
+        "composer-plugin-api": "^1.0 | ^2.0"
     },
     "require-dev": {
-        "composer/composer": "^1.0.0",
+        "composer/composer": "^1.0 | ^2.0",
         "vaimo/composer-changelogs": "^0.15.4",
         "squizlabs/php_codesniffer": "^2.9.2",
         "phpcompatibility/php-compatibility": "^9.1.1",
@@ -19,7 +19,7 @@
     },
     "config": {
         "platform": {
-            "php": "5.3.9"
+            "php": "7.2.9"
         }
     },
     "scripts-descriptions": {
