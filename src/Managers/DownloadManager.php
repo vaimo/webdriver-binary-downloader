@@ -139,7 +139,7 @@ class DownloadManager
              * which is why there is the third call argument (not present
              * in interface footprint).
              */
-            $downloader->download($package, $fullPath, false);
+            $downloader->download($package, $fullPath);
             
             return $package;
         }
