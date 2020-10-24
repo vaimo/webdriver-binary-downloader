@@ -128,7 +128,7 @@ class DownloadManager
                 array($executableName)
             );
 
-            $downloader = $this->downloadManager->getDownloaderForInstalledPackage($package);
+            $downloader = $this->downloadManager->getDownloaderForPackage($package);
 
             if ($downloader === null) {
                 continue;
