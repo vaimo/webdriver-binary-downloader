@@ -71,8 +71,8 @@ class PackageManager
     {
         $sourceDir = $this->systemUtils->composePath($this->vendorDir, $package->getTargetDir());
 
-        dump($this->vendorDir);
-        dump($package->getTargetDir());
+        var_dump($this->vendorDir);
+        var_dump($package->getTargetDir());
 
         $matches = array();
 
