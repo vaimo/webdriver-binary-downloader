@@ -74,9 +74,11 @@ class PackageManager
         var_dump($this->vendorDir);
         var_dump($package->getTargetDir());
 
-        $matches = array();
+        $matches = [];
 
         $binaries = $package->getBinaries();
+
+        var_dump($binaries);
 
         foreach ($binaries as $binary) {
             if (file_exists($this->systemUtils->composePath($sourceDir, $binary))) {
