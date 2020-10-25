@@ -128,7 +128,7 @@ class DownloadManager
             'downloads'
         );
 
-        echo "== fullpath == \n";
+        echo "== downloadRelease fullpath == \n";
         \Symfony\Component\VarDumper\VarDumper::dump($fullPath);
 
         while ($version = array_shift($versions)) {

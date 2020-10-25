@@ -71,14 +71,14 @@ class PackageManager
     {
         $sourceDir = $this->systemUtils->composePath($this->vendorDir, $package->getTargetDir());
 
-        // var_dump($this->vendorDir);
-        // var_dump($package->getTargetDir());
+        \Symfony\Component\VarDumper\VarDumper::dump($this->vendorDir);
+        \Symfony\Component\VarDumper\VarDumper::dump($package->getTargetDir());
 
         $matches = [];
 
         $binaries = $package->getBinaries();
 
-        // var_dump($binaries);
+        \Symfony\Component\VarDumper\VarDumper::dump($binaries);
 
         foreach ($binaries as $binary) {
             if (file_exists($this->systemUtils->composePath($sourceDir, $binary))) {
@@ -86,6 +86,8 @@ class PackageManager
             }
 
             $globPattern = $this->systemUtils->composePath($sourceDir, '**', $binary);
+
+            \Symfony\Component\VarDumper\VarDumper::dump($globPattern);
 
             $matches = array_merge(
                 $matches,
