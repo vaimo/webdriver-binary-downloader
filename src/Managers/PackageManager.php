@@ -71,6 +71,8 @@ class PackageManager
     {
         $sourceDir = $this->systemUtils->composePath($this->vendorDir, $package->getTargetDir());
 
+        echo "\n== installBinaries == \n";
+
         \Symfony\Component\VarDumper\VarDumper::dump($this->vendorDir);
         \Symfony\Component\VarDumper\VarDumper::dump($package->getTargetDir());
 
@@ -95,6 +97,10 @@ class PackageManager
             );
         }
 
+        echo "\n\n== Matches ==\n\n";
+        \Symfony\Component\VarDumper\VarDumper::dump($matches);
+
+
         if (!$matches) {
             $errorMessage = sprintf(
                 'Could not locate binaries (%s) from downloaded source',
@@ -110,7 +116,9 @@ class PackageManager
             
             throw new \Exception($errorMessage);
         }
-        
+
+        echo "\n== end installBinaries == \n";
+
         $fileRenames = $this->pluginConfig->getExecutableFileRenames();
         
         $this->fileSystem->ensureDirectoryExists($binDir);
