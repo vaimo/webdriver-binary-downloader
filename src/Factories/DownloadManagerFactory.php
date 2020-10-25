@@ -15,6 +15,11 @@ class DownloadManagerFactory
     private $composerContext;
 
     /**
+     * @var \Composer\Composer
+     */
+    private $composer;
+
+    /**
      * @var \Composer\IO\IOInterface
      */
     private $cliIO;
@@ -29,10 +34,12 @@ class DownloadManagerFactory
      */
     public function __construct(
         \Vaimo\WebDriverBinaryDownloader\Composer\Context $composerContext,
-        \Composer\IO\IOInterface $cliIO
+        \Composer\IO\IOInterface $cliIO,
+        \Composer\Composer $composer
     ) {
         $this->composerContext = $composerContext;
         $this->cliIO = $cliIO;
+        $this->composer = $composer;
         
         $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
     }
@@ -57,7 +64,8 @@ class DownloadManagerFactory
             $composer->getInstallationManager(),
             $this->createCacheManager($composer, $pluginPackage->getName()),
             new \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory(),
-            $pluginConfig
+            $pluginConfig,
+            $this->composer
         );
     }
 

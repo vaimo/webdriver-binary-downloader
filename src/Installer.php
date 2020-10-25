@@ -92,7 +92,8 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         
         $dlManagerFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\DownloadManagerFactory(
             $composerCtx,
-            $this->cliIO
+            $this->cliIO,
+            $this->composerRuntime
         );
         
         $downloadManager = $dlManagerFactory->create($pluginConfig);

@@ -6,6 +6,8 @@
 namespace Vaimo\WebDriverBinaryDownloader\Managers;
 
 use Composer\Package\PackageInterface;
+use Composer\Util\HttpDownloader;
+use Composer\Util\SyncHelper;
 use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
 
 class DownloadManager
@@ -59,7 +61,12 @@ class DownloadManager
      * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils
      */
     private $stringUtils;
-    
+
+    /**
+     * @var \Composer\Composer
+     */
+    private $composer;
+
     /**
      * @param \Composer\Package\CompletePackage $ownerPackage
      * @param \Composer\Downloader\DownloadManager $downloadManager
@@ -74,7 +81,8 @@ class DownloadManager
         \Composer\Installer\InstallationManager $installationManager,
         \Composer\Cache $cacheManager,
         \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory $driverPkgFactory,
-        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        \Composer\Composer $composer
     ) {
         $this->ownerPackage = $ownerPackage;
         $this->downloadManager = $downloadManager;
@@ -82,6 +90,7 @@ class DownloadManager
         $this->cacheManager = $cacheManager;
         $this->driverPkgFactory = $driverPkgFactory;
         $this->pluginConfig = $pluginConfig;
+        $this->composer = $composer;
         
         $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
         $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
@@ -119,7 +128,13 @@ class DownloadManager
             'downloads'
         );
 
+        echo "== fullpath == \n";
+        \Symfony\Component\VarDumper\VarDumper::dump($fullPath);
+
         while ($version = array_shift($versions)) {
+            \Symfony\Component\VarDumper\VarDumper::dump($this->getDownloadUrl($version));
+            \Symfony\Component\VarDumper\VarDumper::dump($relativePath);
+
             $package = $this->driverPkgFactory->create(
                 $name,
                 $this->getDownloadUrl($version),
@@ -128,19 +143,13 @@ class DownloadManager
                 array($executableName)
             );
 
-            $downloader = $this->downloadManager->getDownloaderForPackage($package);
+            SyncHelper::downloadAndInstallPackageSync(
+                $this->composer->getLoop(),
+                $this->composer->getDownloadManager()->getDownloader('zip'),
+                $fullPath,
+                $package
+            );
 
-            if ($downloader === null) {
-                continue;
-            }
-
-            /**
-             * Some downloader types have the option to mute the output,
-             * which is why there is the third call argument (not present
-             * in interface footprint).
-             */
-            $downloader->download($package, $fullPath);
-            
             return $package;
         }
 
