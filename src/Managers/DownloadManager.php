@@ -16,7 +16,7 @@ class DownloadManager
      * @var \Composer\Package\CompletePackage
      */
     private $ownerPackage;
-    
+
     /**
      * @var \Composer\Downloader\DownloadManager
      */
@@ -26,7 +26,7 @@ class DownloadManager
      * @var \Composer\Installer\InstallationManager
      */
     private $installationManager;
-    
+
     /**
      * @var \Composer\Cache
      */
@@ -46,7 +46,7 @@ class DownloadManager
      * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
     private $platformAnalyser;
-    
+
     /**
      * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
      */
@@ -91,13 +91,13 @@ class DownloadManager
         $this->driverPkgFactory = $driverPkgFactory;
         $this->pluginConfig = $pluginConfig;
         $this->composer = $composer;
-        
+
         $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
         $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
         $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
         $this->stringUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils();
     }
-    
+
     public function downloadRelease(array $versions)
     {
         $executableName = $this->dataUtils->extractValue(
@@ -107,7 +107,7 @@ class DownloadManager
         );
 
         $ownerName = $this->ownerPackage->getName();
-        
+
         if (!$executableName) {
             $platformName = $this->platformAnalyser->getPlatformName();
 
@@ -117,7 +117,7 @@ class DownloadManager
         }
 
         $name = sprintf('%s-virtual', $ownerName);
-        
+
         $relativePath = $this->systemUtils->composePath(
             $this->ownerPackage->getName(),
             'downloads'
@@ -128,13 +128,7 @@ class DownloadManager
             'downloads'
         );
 
-        echo "== downloadRelease fullpath == \n";
-        \Symfony\Component\VarDumper\VarDumper::dump($fullPath);
-
         while ($version = array_shift($versions)) {
-            \Symfony\Component\VarDumper\VarDumper::dump($this->getDownloadUrl($version));
-            \Symfony\Component\VarDumper\VarDumper::dump($relativePath);
-
             $package = $this->driverPkgFactory->create(
                 $name,
                 $this->getDownloadUrl($version),

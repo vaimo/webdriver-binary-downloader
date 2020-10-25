@@ -19,7 +19,7 @@ class PackageManager
      * @var \Composer\Util\Filesystem
      */
     private $fileSystem;
-    
+
     /**
      * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
@@ -71,16 +71,9 @@ class PackageManager
     {
         $sourceDir = $this->systemUtils->composePath($this->vendorDir, $package->getTargetDir());
 
-        echo "\n== installBinaries == \n";
-
-        \Symfony\Component\VarDumper\VarDumper::dump($this->vendorDir);
-        \Symfony\Component\VarDumper\VarDumper::dump($package->getTargetDir());
-
         $matches = [];
 
         $binaries = $package->getBinaries();
-
-        \Symfony\Component\VarDumper\VarDumper::dump($binaries);
 
         foreach ($binaries as $binary) {
             if (file_exists($this->systemUtils->composePath($sourceDir, $binary))) {
@@ -89,17 +82,11 @@ class PackageManager
 
             $globPattern = $this->systemUtils->composePath($sourceDir, '**', $binary);
 
-            \Symfony\Component\VarDumper\VarDumper::dump($globPattern);
-
             $matches = array_merge(
                 $matches,
                 $this->systemUtils->recursiveGlob($globPattern)
             );
         }
-
-        echo "\n\n== Matches ==\n\n";
-        \Symfony\Component\VarDumper\VarDumper::dump($matches);
-
 
         if (!$matches) {
             $errorMessage = sprintf(
@@ -113,19 +100,17 @@ class PackageManager
                     )
                 )
             );
-            
+
             throw new \Exception($errorMessage);
         }
 
-        echo "\n== end installBinaries == \n";
-
         $fileRenames = $this->pluginConfig->getExecutableFileRenames();
-        
+
         $this->fileSystem->ensureDirectoryExists($binDir);
 
         foreach (array_filter($matches, 'is_executable') as $fromPath) {
             $fileName = basename($fromPath);
-            
+
             $toPath = $this->systemUtils->composePath(
                 $binDir,
                 $this->dataUtils->extractValue($fileRenames, $fileName, $fileName)
