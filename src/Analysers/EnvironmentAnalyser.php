@@ -1,36 +1,36 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Analysers;
+namespace Lanfest\WebDriverBinaryDownloader\Analysers;
 
 class EnvironmentAnalyser
 {
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface
+     * @var \Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface
      */
     private $pluginConfig;
     
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
+     * @var \Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
     private $platformAnalyser;
     
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Resolvers\VersionResolver
+     * @var \Lanfest\WebDriverBinaryDownloader\Resolvers\VersionResolver
      */
     private $versionResolver;
 
     /**
-     * @param \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param \Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
      * @param \Composer\IO\IOInterface $cliIO
      */
     public function __construct(
-        \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        \Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
         \Composer\IO\IOInterface $cliIO = null
     ) {
         $this->pluginConfig = $pluginConfig;
         
-        $this->platformAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->versionResolver = new \LANFest\WebDriverBinaryDownloader\Resolvers\VersionResolver($cliIO);
+        $this->platformAnalyser = new \Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
+        $this->versionResolver = new \Lanfest\WebDriverBinaryDownloader\Resolvers\VersionResolver($cliIO);
     }
 
     public function resolveBrowserVersion()

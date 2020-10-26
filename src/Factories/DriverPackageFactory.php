@@ -1,6 +1,6 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Factories;
+namespace Lanfest\WebDriverBinaryDownloader\Factories;
 
 class DriverPackageFactory
 {

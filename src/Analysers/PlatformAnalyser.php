@@ -1,8 +1,8 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Analysers;
+namespace Lanfest\WebDriverBinaryDownloader\Analysers;
 
-class PlatformAnalyser implements \LANFest\WebDriverBinaryDownloader\Interfaces\PlatformAnalyserInterface
+class PlatformAnalyser implements \Lanfest\WebDriverBinaryDownloader\Interfaces\PlatformAnalyserInterface
 {
     public function getPlatformCode()
     {

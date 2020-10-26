@@ -1,6 +1,6 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Composer;
+namespace Lanfest\WebDriverBinaryDownloader\Composer;
 
 class Context
 {
@@ -83,6 +83,6 @@ class Context
             $name
         );
         
-        throw new \LANFest\WebDriverBinaryDownloader\Exceptions\RuntimeException($message);
+        throw new \Lanfest\WebDriverBinaryDownloader\Exceptions\RuntimeException($message);
     }
 }

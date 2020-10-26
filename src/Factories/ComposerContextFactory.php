@@ -1,6 +1,6 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Factories;
+namespace Lanfest\WebDriverBinaryDownloader\Factories;
 
 class ComposerContextFactory
 {
@@ -38,7 +38,7 @@ class ComposerContextFactory
 
         array_unshift($instances, self::$globalComposer);
 
-        return new \LANFest\WebDriverBinaryDownloader\Composer\Context(
+        return new \Lanfest\WebDriverBinaryDownloader\Composer\Context(
             array_filter($instances)
         );
     }

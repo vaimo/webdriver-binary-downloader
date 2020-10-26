@@ -1,5 +1,5 @@
 {
-    "name": "LANFest/webdriver-binary-downloader",
+    "name": "lanfest/webdriver-binary-downloader",
     "type": "library",
     "license": "MIT",
     "description": "General-issue library that enables building any kind of WebDriver binary downloader",
@@ -31,7 +31,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "LANFest\\WebDriverBinaryDownloader\\": "src"
+            "Lanfest\\WebDriverBinaryDownloader\\": "src"
         }
     }
 }

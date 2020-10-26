@@ -1,6 +1,6 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Interfaces;
+namespace Lanfest\WebDriverBinaryDownloader\Interfaces;
 
 interface ConfigInterface
 {

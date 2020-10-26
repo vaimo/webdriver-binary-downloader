@@ -1,19 +1,19 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Strategies;
+namespace Lanfest\WebDriverBinaryDownloader\Strategies;
 
 class DownloadStrategy
 {
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Composer\Context
+     * @var \Lanfest\WebDriverBinaryDownloader\Composer\Context
      */
     private $composerContext;
 
     /**
-     * @param \LANFest\WebDriverBinaryDownloader\Composer\Context $composerContext
+     * @param \Lanfest\WebDriverBinaryDownloader\Composer\Context $composerContext
      */
     public function __construct(
-        \LANFest\WebDriverBinaryDownloader\Composer\Context $composerContext
+        \Lanfest\WebDriverBinaryDownloader\Composer\Context $composerContext
     ) {
         $this->composerContext = $composerContext;
     }
@@ -22,7 +22,7 @@ class DownloadStrategy
     {
         $composer = $this->composerContext->getLocalComposer();
 
-        $packageResolver = new \LANFest\WebDriverBinaryDownloader\Resolvers\PackageResolver(
+        $packageResolver = new \Lanfest\WebDriverBinaryDownloader\Resolvers\PackageResolver(
             array($composer->getPackage())
         );
 
@@ -31,7 +31,7 @@ class DownloadStrategy
 
         try {
             $packageResolver->resolveForNamespace($packages, __NAMESPACE__);
-        } catch (\LANFest\WebDriverBinaryDownloader\Exceptions\RuntimeException $exception) {
+        } catch (\Lanfest\WebDriverBinaryDownloader\Exceptions\RuntimeException $exception) {
             return false;
         }
 

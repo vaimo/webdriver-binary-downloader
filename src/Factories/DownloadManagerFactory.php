@@ -1,13 +1,13 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Factories;
+namespace Lanfest\WebDriverBinaryDownloader\Factories;
 
-use LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+use Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
 
 class DownloadManagerFactory
 {
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Composer\Context
+     * @var \Lanfest\WebDriverBinaryDownloader\Composer\Context
      */
     private $composerContext;
 
@@ -17,21 +17,21 @@ class DownloadManagerFactory
     private $cliIO;
 
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils
+     * @var \Lanfest\WebDriverBinaryDownloader\Utils\SystemUtils
      */
     private $systemUtils;
 
     /**
-     * @param \LANFest\WebDriverBinaryDownloader\Composer\Context $composerContext
+     * @param \Lanfest\WebDriverBinaryDownloader\Composer\Context $composerContext
      */
     public function __construct(
-        \LANFest\WebDriverBinaryDownloader\Composer\Context $composerContext,
+        \Lanfest\WebDriverBinaryDownloader\Composer\Context $composerContext,
         \Composer\IO\IOInterface $cliIO
     ) {
         $this->composerContext = $composerContext;
         $this->cliIO = $cliIO;
         
-        $this->systemUtils = new \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->systemUtils = new \Lanfest\WebDriverBinaryDownloader\Utils\SystemUtils();
     }
 
     public function create(ConfigInterface $pluginConfig)
@@ -39,7 +39,7 @@ class DownloadManagerFactory
         $composer = $this->composerContext->getLocalComposer();
         $packages = $this->composerContext->getActivePackages();
         
-        $packageResolver = new \LANFest\WebDriverBinaryDownloader\Resolvers\PackageResolver(
+        $packageResolver = new \Lanfest\WebDriverBinaryDownloader\Resolvers\PackageResolver(
             array($composer->getPackage())
         );
         
@@ -48,12 +48,12 @@ class DownloadManagerFactory
             get_class($pluginConfig)
         );
 
-        return new \LANFest\WebDriverBinaryDownloader\Managers\DownloadManager(
+        return new \Lanfest\WebDriverBinaryDownloader\Managers\DownloadManager(
             $pluginPackage,
             $composer->getDownloadManager(),
             $composer->getInstallationManager(),
             $this->createCacheManager($composer, $pluginPackage->getName()),
-            new \LANFest\WebDriverBinaryDownloader\Factories\DriverPackageFactory(),
+            new \Lanfest\WebDriverBinaryDownloader\Factories\DriverPackageFactory(),
             $pluginConfig
         );
     }

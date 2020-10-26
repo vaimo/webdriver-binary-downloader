@@ -1,14 +1,14 @@
 <?php
 
-namespace LANFest\WebDriverBinaryDownloader\Managers;
+namespace Lanfest\WebDriverBinaryDownloader\Managers;
 
 use Composer\Package\PackageInterface;
-use LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser as OsDetector;
+use Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser as OsDetector;
 
 class PackageManager
 {
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface
+     * @var \Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface
      */
     private $pluginConfig;
 
@@ -18,17 +18,17 @@ class PackageManager
     private $fileSystem;
     
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
+     * @var \Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
     private $platformAnalyser;
 
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils
+     * @var \Lanfest\WebDriverBinaryDownloader\Utils\SystemUtils
      */
     private $systemUtils;
 
     /**
-     * @var \LANFest\WebDriverBinaryDownloader\Utils\DataUtils
+     * @var \Lanfest\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
 
@@ -38,11 +38,11 @@ class PackageManager
     private $vendorDir;
 
     /**
-     * @param \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param \Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
      * @param string $vendorDir
      */
     public function __construct(
-        \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        \Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
         $vendorDir
     ) {
         $this->pluginConfig = $pluginConfig;
@@ -50,10 +50,10 @@ class PackageManager
 
         $this->fileSystem = new \Composer\Util\Filesystem();
 
-        $this->platformAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
+        $this->platformAnalyser = new \Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
 
-        $this->systemUtils = new \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils();
-        $this->dataUtils = new \LANFest\WebDriverBinaryDownloader\Utils\DataUtils();
+        $this->systemUtils = new \Lanfest\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->dataUtils = new \Lanfest\WebDriverBinaryDownloader\Utils\DataUtils();
     }
 
     /**
