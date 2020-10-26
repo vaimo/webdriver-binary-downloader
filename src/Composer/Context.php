@@ -1,9 +1,6 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Composer;
+
+namespace LANFest\WebDriverBinaryDownloader\Composer;
 
 class Context
 {
@@ -86,6 +83,6 @@ class Context
             $name
         );
         
-        throw new \Vaimo\WebDriverBinaryDownloader\Exceptions\RuntimeException($message);
+        throw new \LANFest\WebDriverBinaryDownloader\Exceptions\RuntimeException($message);
     }
 }

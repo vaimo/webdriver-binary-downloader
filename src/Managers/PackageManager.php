@@ -1,17 +1,14 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Managers;
+
+namespace LANFest\WebDriverBinaryDownloader\Managers;
 
 use Composer\Package\PackageInterface;
-use Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser as OsDetector;
+use LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser as OsDetector;
 
 class PackageManager
 {
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface
+     * @var \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface
      */
     private $pluginConfig;
 
@@ -21,17 +18,17 @@ class PackageManager
     private $fileSystem;
     
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
+     * @var \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
     private $platformAnalyser;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils
      */
     private $systemUtils;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
 
@@ -41,11 +38,11 @@ class PackageManager
     private $vendorDir;
 
     /**
-     * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
      * @param string $vendorDir
      */
     public function __construct(
-        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
         $vendorDir
     ) {
         $this->pluginConfig = $pluginConfig;
@@ -53,10 +50,10 @@ class PackageManager
 
         $this->fileSystem = new \Composer\Util\Filesystem();
 
-        $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
+        $this->platformAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
 
-        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
-        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
+        $this->systemUtils = new \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->dataUtils = new \LANFest\WebDriverBinaryDownloader\Utils\DataUtils();
     }
 
     /**

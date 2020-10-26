@@ -1,9 +1,6 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Resolvers;
+
+namespace LANFest\WebDriverBinaryDownloader\Resolvers;
 
 class VersionResolver
 {
@@ -18,12 +15,12 @@ class VersionResolver
     private $versionParser;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\StringUtils
      */
     private $stringUtils;
     
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
     
@@ -34,8 +31,8 @@ class VersionResolver
         
         $this->versionParser = new \Composer\Package\Version\VersionParser();
 
-        $this->stringUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils();
-        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
+        $this->stringUtils = new \LANFest\WebDriverBinaryDownloader\Utils\StringUtils();
+        $this->dataUtils = new \LANFest\WebDriverBinaryDownloader\Utils\DataUtils();
     }
     
     public function pollForExecutableVersion(array $binaryPaths, array $versionPollingConfig)

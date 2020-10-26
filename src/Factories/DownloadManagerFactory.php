@@ -1,16 +1,13 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Factories;
 
-use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+namespace LANFest\WebDriverBinaryDownloader\Factories;
+
+use LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
 
 class DownloadManagerFactory
 {
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Composer\Context
+     * @var \LANFest\WebDriverBinaryDownloader\Composer\Context
      */
     private $composerContext;
 
@@ -20,21 +17,21 @@ class DownloadManagerFactory
     private $cliIO;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils
      */
     private $systemUtils;
 
     /**
-     * @param \Vaimo\WebDriverBinaryDownloader\Composer\Context $composerContext
+     * @param \LANFest\WebDriverBinaryDownloader\Composer\Context $composerContext
      */
     public function __construct(
-        \Vaimo\WebDriverBinaryDownloader\Composer\Context $composerContext,
+        \LANFest\WebDriverBinaryDownloader\Composer\Context $composerContext,
         \Composer\IO\IOInterface $cliIO
     ) {
         $this->composerContext = $composerContext;
         $this->cliIO = $cliIO;
         
-        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->systemUtils = new \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils();
     }
 
     public function create(ConfigInterface $pluginConfig)
@@ -42,7 +39,7 @@ class DownloadManagerFactory
         $composer = $this->composerContext->getLocalComposer();
         $packages = $this->composerContext->getActivePackages();
         
-        $packageResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\PackageResolver(
+        $packageResolver = new \LANFest\WebDriverBinaryDownloader\Resolvers\PackageResolver(
             array($composer->getPackage())
         );
         
@@ -51,12 +48,12 @@ class DownloadManagerFactory
             get_class($pluginConfig)
         );
 
-        return new \Vaimo\WebDriverBinaryDownloader\Managers\DownloadManager(
+        return new \LANFest\WebDriverBinaryDownloader\Managers\DownloadManager(
             $pluginPackage,
             $composer->getDownloadManager(),
             $composer->getInstallationManager(),
             $this->createCacheManager($composer, $pluginPackage->getName()),
-            new \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory(),
+            new \LANFest\WebDriverBinaryDownloader\Factories\DriverPackageFactory(),
             $pluginConfig
         );
     }

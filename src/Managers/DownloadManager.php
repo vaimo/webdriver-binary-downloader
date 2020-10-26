@@ -1,12 +1,9 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Managers;
+
+namespace LANFest\WebDriverBinaryDownloader\Managers;
 
 use Composer\Package\PackageInterface;
-use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+use LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
 
 class DownloadManager
 {
@@ -31,32 +28,32 @@ class DownloadManager
     private $cacheManager;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory
+     * @var \LANFest\WebDriverBinaryDownloader\Factories\DriverPackageFactory
      */
     private $driverPkgFactory;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface
+     * @var \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface
      */
     private $pluginConfig;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
+     * @var \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
     private $platformAnalyser;
     
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils
      */
     private $systemUtils;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\StringUtils
      */
     private $stringUtils;
     
@@ -65,16 +62,16 @@ class DownloadManager
      * @param \Composer\Downloader\DownloadManager $downloadManager
      * @param \Composer\Installer\InstallationManager $installationManager
      * @param \Composer\Cache $cacheManager
-     * @param \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory $driverPkgFactory
-     * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param \LANFest\WebDriverBinaryDownloader\Factories\DriverPackageFactory $driverPkgFactory
+     * @param \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
      */
     public function __construct(
         \Composer\Package\CompletePackage $ownerPackage,
         \Composer\Downloader\DownloadManager $downloadManager,
         \Composer\Installer\InstallationManager $installationManager,
         \Composer\Cache $cacheManager,
-        \Vaimo\WebDriverBinaryDownloader\Factories\DriverPackageFactory $driverPkgFactory,
-        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+        \LANFest\WebDriverBinaryDownloader\Factories\DriverPackageFactory $driverPkgFactory,
+        \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
     ) {
         $this->ownerPackage = $ownerPackage;
         $this->downloadManager = $downloadManager;
@@ -83,10 +80,10 @@ class DownloadManager
         $this->driverPkgFactory = $driverPkgFactory;
         $this->pluginConfig = $pluginConfig;
         
-        $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
-        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
-        $this->stringUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\StringUtils();
+        $this->platformAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
+        $this->systemUtils = new \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->dataUtils = new \LANFest\WebDriverBinaryDownloader\Utils\DataUtils();
+        $this->stringUtils = new \LANFest\WebDriverBinaryDownloader\Utils\StringUtils();
     }
     
     public function downloadRelease(array $versions)
@@ -102,7 +99,7 @@ class DownloadManager
         if (!$executableName) {
             $platformName = $this->platformAnalyser->getPlatformName();
 
-            throw new \Vaimo\WebDriverBinaryDownloader\Exceptions\PlatformNotSupportedException(
+            throw new \LANFest\WebDriverBinaryDownloader\Exceptions\PlatformNotSupportedException(
                 sprintf('The package %s does not support platform: %s', $ownerName, $platformName)
             );
         }

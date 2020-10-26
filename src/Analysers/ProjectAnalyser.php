@@ -1,12 +1,9 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Analysers;
 
-use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
-use Vaimo\WebDriverBinaryDownloader\Interfaces\PlatformAnalyserInterface as Platform;
+namespace LANFest\WebDriverBinaryDownloader\Analysers;
+
+use LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+use LANFest\WebDriverBinaryDownloader\Interfaces\PlatformAnalyserInterface as Platform;
 
 class ProjectAnalyser
 {
@@ -16,32 +13,32 @@ class ProjectAnalyser
     private $versionParser;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface
+     * @var \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface
      */
     private $pluginConfig;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\EnvironmentAnalyser
+     * @var \LANFest\WebDriverBinaryDownloader\Analysers\EnvironmentAnalyser
      */
     private $environmentAnalyser;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
+     * @var \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
     private $platformAnalyser;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver
+     * @var \LANFest\WebDriverBinaryDownloader\Resolvers\VersionResolver
      */
     private $versionResolver;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils
      */
     private $systemUtils;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
 
@@ -51,27 +48,27 @@ class ProjectAnalyser
     private $browserVersion;
 
     /**
-     * @param \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+     * @param \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
      * @param \Composer\IO\IOInterface $cliIO
      */
     public function __construct(
-        \Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
+        \LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig,
         \Composer\IO\IOInterface $cliIO = null
     ) {
         $this->pluginConfig = $pluginConfig;
 
-        $this->environmentAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\EnvironmentAnalyser(
+        $this->environmentAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\EnvironmentAnalyser(
             $pluginConfig,
             $cliIO
         );
 
         $this->versionParser = new \Composer\Package\Version\VersionParser();
 
-        $this->platformAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
-        $this->versionResolver = new \Vaimo\WebDriverBinaryDownloader\Resolvers\VersionResolver();
+        $this->platformAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
+        $this->versionResolver = new \LANFest\WebDriverBinaryDownloader\Resolvers\VersionResolver();
 
-        $this->systemUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\SystemUtils();
-        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
+        $this->systemUtils = new \LANFest\WebDriverBinaryDownloader\Utils\SystemUtils();
+        $this->dataUtils = new \LANFest\WebDriverBinaryDownloader\Utils\DataUtils();
     }
 
     public function resolvePlatformSupport()

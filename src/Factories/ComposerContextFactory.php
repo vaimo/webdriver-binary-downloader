@@ -1,9 +1,6 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Factories;
+
+namespace LANFest\WebDriverBinaryDownloader\Factories;
 
 class ComposerContextFactory
 {
@@ -41,7 +38,7 @@ class ComposerContextFactory
 
         array_unshift($instances, self::$globalComposer);
 
-        return new \Vaimo\WebDriverBinaryDownloader\Composer\Context(
+        return new \LANFest\WebDriverBinaryDownloader\Composer\Context(
             array_filter($instances)
         );
     }

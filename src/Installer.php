@@ -1,14 +1,11 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader;
 
-use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
-use Vaimo\WebDriverBinaryDownloader\Composer\Config;
+namespace LANFest\WebDriverBinaryDownloader;
 
-class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\InstallerInterface
+use LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+use LANFest\WebDriverBinaryDownloader\Composer\Config;
+
+class Installer implements \LANFest\WebDriverBinaryDownloader\Interfaces\InstallerInterface
 {
     /**
      * @var \Composer\Composer
@@ -34,13 +31,13 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
     
     public function executeWithConfig(ConfigInterface $pluginConfig)
     {
-        $composerCtxFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\ComposerContextFactory(
+        $composerCtxFactory = new \LANFest\WebDriverBinaryDownloader\Factories\ComposerContextFactory(
             $this->composerRuntime
         );
 
         $composerCtx = $composerCtxFactory->create();
 
-        $downloadStrategy = new \Vaimo\WebDriverBinaryDownloader\Strategies\DownloadStrategy($composerCtx);
+        $downloadStrategy = new \LANFest\WebDriverBinaryDownloader\Strategies\DownloadStrategy($composerCtx);
 
         if (!$downloadStrategy->shouldAllow()) {
             return;
@@ -50,12 +47,12 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
         
         $binaryDir = $composerConfig->get(Config::BIN_DIR);
         
-        $projectAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\ProjectAnalyser(
+        $projectAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\ProjectAnalyser(
             $pluginConfig,
             $this->cliIO->isDebug() ? $this->cliIO : null
         );
         
-        $packageManager = new \Vaimo\WebDriverBinaryDownloader\Managers\PackageManager(
+        $packageManager = new \LANFest\WebDriverBinaryDownloader\Managers\PackageManager(
             $pluginConfig,
             $composerConfig->get(Config::VENDOR_DIR)
         );
@@ -90,7 +87,7 @@ class Installer implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Installer
             sprintf('<info>Installing <comment>%s</comment> (v%s)</info>', $driverName, $version)
         );
         
-        $dlManagerFactory = new \Vaimo\WebDriverBinaryDownloader\Factories\DownloadManagerFactory(
+        $dlManagerFactory = new \LANFest\WebDriverBinaryDownloader\Factories\DownloadManagerFactory(
             $composerCtx,
             $this->cliIO
         );

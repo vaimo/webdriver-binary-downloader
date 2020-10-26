@@ -1,9 +1,6 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Resolvers;
+
+namespace LANFest\WebDriverBinaryDownloader\Resolvers;
 
 class PackageResolver
 {
@@ -13,7 +10,7 @@ class PackageResolver
     private $additionalPackages;
 
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser
+     * @var \LANFest\WebDriverBinaryDownloader\Analysers\PackageAnalyser
      */
     private $packageAnalyser;
 
@@ -25,7 +22,7 @@ class PackageResolver
     ) {
         $this->additionalPackages = $additionalPackages;
 
-        $this->packageAnalyser = new \Vaimo\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
+        $this->packageAnalyser = new \LANFest\WebDriverBinaryDownloader\Analysers\PackageAnalyser();
     }
 
     
@@ -44,7 +41,7 @@ class PackageResolver
             return $package;
         }
 
-        throw new \Vaimo\WebDriverBinaryDownloader\Exceptions\RuntimeException(
+        throw new \LANFest\WebDriverBinaryDownloader\Exceptions\RuntimeException(
             'Failed to detect the plugin package'
         );
     }

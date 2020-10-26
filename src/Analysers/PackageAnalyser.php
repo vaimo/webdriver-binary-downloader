@@ -1,22 +1,19 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Analysers;
 
-use Vaimo\WebDriverBinaryDownloader\Composer\Config as ComposerConfig;
+namespace LANFest\WebDriverBinaryDownloader\Analysers;
+
+use LANFest\WebDriverBinaryDownloader\Composer\Config as ComposerConfig;
 
 class PackageAnalyser
 {
     /**
-     * @var \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils
+     * @var \LANFest\WebDriverBinaryDownloader\Utils\DataUtils
      */
     private $dataUtils;
     
     public function __construct()
     {
-        $this->dataUtils = new \Vaimo\WebDriverBinaryDownloader\Utils\DataUtils();
+        $this->dataUtils = new \LANFest\WebDriverBinaryDownloader\Utils\DataUtils();
     }
 
     public function isPluginPackage(\Composer\Package\PackageInterface $package)

@@ -1,11 +1,8 @@
 <?php
-/**
- * Copyright © Vaimo Group. All rights reserved.
- * See LICENSE_VAIMO.txt for license details.
- */
-namespace Vaimo\WebDriverBinaryDownloader\Interfaces;
 
-use Vaimo\WebDriverBinaryDownloader\Interfaces\ConfigInterface as Config;
+namespace LANFest\WebDriverBinaryDownloader\Interfaces;
+
+use LANFest\WebDriverBinaryDownloader\Interfaces\ConfigInterface as Config;
 
 interface InstallerInterface
 {
