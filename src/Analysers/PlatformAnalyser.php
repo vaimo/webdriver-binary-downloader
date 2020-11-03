@@ -29,6 +29,14 @@ class PlatformAnalyser implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Pl
             return self::TYPE_LINUX32;
         }
 
+        if (stripos(PHP_OS, 'FreeBSD') === 0) {
+            if (PHP_INT_SIZE === 8) {
+                return self::TYPE_FREEBSD64;
+            }
+
+            return self::TYPE_FREEBSD32;
+        }
+
         throw new \Exception('Platform code detection failed');
     }
 
@@ -39,7 +47,9 @@ class PlatformAnalyser implements \Vaimo\WebDriverBinaryDownloader\Interfaces\Pl
             self::TYPE_LINUX64 => 'Linux 64Bits',
             self::TYPE_MAC64 => 'Mac OS X',
             self::TYPE_WIN32 => 'Windows 32Bits',
-            self::TYPE_WIN64 => 'Windows 64Bits'
+            self::TYPE_WIN64 => 'Windows 64Bits',
+            self::TYPE_FREEBSD64 => 'FreeBSD 64Bits',
+            self::TYPE_FREEBSD32 => 'FreeBSD 32Bits',
         );
         
         return $names[$this->getPlatformCode()];

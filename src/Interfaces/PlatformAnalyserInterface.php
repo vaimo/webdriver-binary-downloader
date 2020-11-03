@@ -12,6 +12,8 @@ interface PlatformAnalyserInterface
     const TYPE_WIN32 = 'win32';
     const TYPE_WIN64 = 'win64';
     const TYPE_MAC64 = 'mac64';
+    const TYPE_FREEBSD64 = 'unix64';
+    const TYPE_FREEBSD32 = 'unix32';
 
     /**
      * @return string
