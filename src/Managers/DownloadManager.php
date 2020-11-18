@@ -4,6 +4,8 @@ namespace Lanfest\WebDriverBinaryDownloader\Managers;
 
 use Composer\Package\PackageInterface;
 use Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface;
+use Composer\Util\HttpDownloader;
+use Composer\Util\SyncHelper;
 
 class DownloadManager
 {
@@ -11,7 +13,7 @@ class DownloadManager
      * @var \Composer\Package\CompletePackage
      */
     private $ownerPackage;
-    
+
     /**
      * @var \Composer\Downloader\DownloadManager
      */
@@ -21,7 +23,7 @@ class DownloadManager
      * @var \Composer\Installer\InstallationManager
      */
     private $installationManager;
-    
+
     /**
      * @var \Composer\Cache
      */
@@ -41,7 +43,7 @@ class DownloadManager
      * @var \Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
     private $platformAnalyser;
-    
+
     /**
      * @var \Lanfest\WebDriverBinaryDownloader\Utils\SystemUtils
      */
@@ -56,7 +58,12 @@ class DownloadManager
      * @var \Lanfest\WebDriverBinaryDownloader\Utils\StringUtils
      */
     private $stringUtils;
-    
+
+    /**
+     * @var \Composer\Composer
+     */
+    private $composer;
+
     /**
      * @param \Composer\Package\CompletePackage $ownerPackage
      * @param \Composer\Downloader\DownloadManager $downloadManager
@@ -72,6 +79,7 @@ class DownloadManager
         \Composer\Cache $cacheManager,
         \Lanfest\WebDriverBinaryDownloader\Factories\DriverPackageFactory $driverPkgFactory,
         \Lanfest\WebDriverBinaryDownloader\Interfaces\ConfigInterface $pluginConfig
+        \Composer\Composer $composer
     ) {
         $this->ownerPackage = $ownerPackage;
         $this->downloadManager = $downloadManager;
@@ -79,13 +87,14 @@ class DownloadManager
         $this->cacheManager = $cacheManager;
         $this->driverPkgFactory = $driverPkgFactory;
         $this->pluginConfig = $pluginConfig;
-        
+        $this->composer = $composer;
+
         $this->platformAnalyser = new \Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser();
         $this->systemUtils = new \Lanfest\WebDriverBinaryDownloader\Utils\SystemUtils();
         $this->dataUtils = new \Lanfest\WebDriverBinaryDownloader\Utils\DataUtils();
         $this->stringUtils = new \Lanfest\WebDriverBinaryDownloader\Utils\StringUtils();
     }
-    
+
     public function downloadRelease(array $versions)
     {
         $executableName = $this->dataUtils->extractValue(
@@ -95,7 +104,7 @@ class DownloadManager
         );
 
         $ownerName = $this->ownerPackage->getName();
-        
+
         if (!$executableName) {
             $platformName = $this->platformAnalyser->getPlatformName();
 
@@ -105,7 +114,7 @@ class DownloadManager
         }
 
         $name = sprintf('%s-virtual', $ownerName);
-        
+
         $relativePath = $this->systemUtils->composePath(
             $this->ownerPackage->getName(),
             'downloads'
@@ -125,19 +134,13 @@ class DownloadManager
                 array($executableName)
             );
 
-            $downloader = $this->downloadManager->getDownloaderForInstalledPackage($package);
+            SyncHelper::downloadAndInstallPackageSync(
+                $this->composer->getLoop(),
+                $this->composer->getDownloadManager()->getDownloader('zip'),
+                $fullPath,
+                $package
+            );
 
-            if ($downloader === null) {
-                continue;
-            }
-
-            /**
-             * Some downloader types have the option to mute the output,
-             * which is why there is the third call argument (not present
-             * in interface footprint).
-             */
-            $downloader->download($package, $fullPath, false);
-            
             return $package;
         }
 

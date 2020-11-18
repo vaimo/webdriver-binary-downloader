@@ -89,7 +89,8 @@ class Installer implements \Lanfest\WebDriverBinaryDownloader\Interfaces\Install
         
         $dlManagerFactory = new \Lanfest\WebDriverBinaryDownloader\Factories\DownloadManagerFactory(
             $composerCtx,
-            $this->cliIO
+            $this->cliIO,
+            $this->composerRuntime
         );
         
         $downloadManager = $dlManagerFactory->create($pluginConfig);

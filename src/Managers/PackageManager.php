@@ -16,7 +16,7 @@ class PackageManager
      * @var \Composer\Util\Filesystem
      */
     private $fileSystem;
-    
+
     /**
      * @var \Lanfest\WebDriverBinaryDownloader\Analysers\PlatformAnalyser
      */
@@ -68,7 +68,7 @@ class PackageManager
     {
         $sourceDir = $this->systemUtils->composePath($this->vendorDir, $package->getTargetDir());
 
-        $matches = array();
+        $matches = [];
 
         $binaries = $package->getBinaries();
 
@@ -97,17 +97,17 @@ class PackageManager
                     )
                 )
             );
-            
+
             throw new \Exception($errorMessage);
         }
-        
+
         $fileRenames = $this->pluginConfig->getExecutableFileRenames();
-        
+
         $this->fileSystem->ensureDirectoryExists($binDir);
 
         foreach (array_filter($matches, 'is_executable') as $fromPath) {
             $fileName = basename($fromPath);
-            
+
             $toPath = $this->systemUtils->composePath(
                 $binDir,
                 $this->dataUtils->extractValue($fileRenames, $fileName, $fileName)
